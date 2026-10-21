@@ -1,26 +1,200 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/*
+  Design language: three surfaces — white, black, and one precise blue — with flat 8px cards,
+  pill buttons, 4px inputs and light-weight display type. No gradients, no resting shadows.
+  All text/background pairs meet WCAG AA.
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f5f7fa; /* card */
+  --surface-3: #ebeef2; /* pressed / track */
+  --fg: #000000;
+  --muted: #6b6b6b;
+  --body: rgba(0, 0, 0, 0.6);
+  --border: #ececec; /* hairline */
+  --ash: #cccccc; /* input + outline button border */
+  --primary: #0070d1;
+  --primary-hover: #0064b7;
+  --primary-active: #004d8d;
+  --primary-fg: #ffffff;
+  --primary-soft: rgba(0, 112, 209, 0.08);
+  --link: #0064b7;
+  --danger: #c81b3a;
+  --danger-soft: rgba(200, 27, 58, 0.07);
+  /* the black "hero" panel used inside light pages */
+  --inverse: #000000;
+  --inverse-fg: #ffffff;
+  --inverse-muted: rgba(255, 255, 255, 0.62);
+  --inverse-border: rgba(229, 229, 229, 0.2);
+  --ring: #0070d1;
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg: #000000;
+  --surface: #121314;
+  --surface-2: #181818;
+  --surface-3: #1f2024;
+  --fg: #ffffff;
+  --muted: rgba(255, 255, 255, 0.62);
+  --body: rgba(255, 255, 255, 0.7);
+  --border: rgba(229, 229, 229, 0.14);
+  --ash: rgba(229, 229, 229, 0.3);
+  --primary: #0070d1;
+  --primary-hover: #0064b7;
+  --primary-active: #004d8d;
+  --primary-fg: #ffffff;
+  --primary-soft: rgba(83, 177, 255, 0.12);
+  --link: #53b1ff;
+  --danger: #ff6b81;
+  --danger-soft: rgba(255, 107, 129, 0.1);
+  --inverse: #121314;
+  --inverse-fg: #ffffff;
+  --inverse-muted: rgba(255, 255, 255, 0.62);
+  --inverse-border: rgba(229, 229, 229, 0.2);
+  --ring: #53b1ff;
+  color-scheme: dark;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-body: var(--body);
+  --color-border: var(--border);
+  --color-ash: var(--ash);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-active: var(--primary-active);
+  --color-primary-fg: var(--primary-fg);
+  --color-primary-soft: var(--primary-soft);
+  --color-link: var(--link);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-inverse: var(--inverse);
+  --color-inverse-fg: var(--inverse-fg);
+  --color-inverse-muted: var(--inverse-muted);
+  --color-inverse-border: var(--inverse-border);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  font-feature-settings: "cv11", "ss01";
+}
+
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+}
+
+@layer components {
+  /* ---- type ---- */
+  .display-xl {
+    @apply text-[2.25rem] leading-[1.15] font-light tracking-[-0.01em] sm:text-[3.375rem];
+  }
+  .display-lg {
+    @apply text-[2rem] leading-[1.2] font-light sm:text-[2.75rem];
+  }
+  .heading-xl {
+    @apply text-[1.75rem] leading-[1.25] font-light tracking-[0.005em];
+  }
+  .heading-lg {
+    @apply text-[1.375rem] leading-[1.25] font-light tracking-[0.005em];
+  }
+  .heading-md {
+    @apply text-lg leading-none font-semibold;
+  }
+  .caption {
+    @apply text-sm leading-normal text-muted;
+  }
+  .eyebrow {
+    @apply text-xs font-medium tracking-[0.08em] text-muted uppercase;
+  }
+  .link {
+    @apply text-link underline-offset-4 hover:underline;
+  }
+
+  /* ---- surfaces ---- */
+  .card {
+    @apply rounded-lg bg-surface-2;
+  }
+  .panel-inverse {
+    @apply rounded-lg bg-inverse text-inverse-fg dark:border dark:border-inverse-border;
+  }
+  .hairline {
+    @apply border-border;
+  }
+
+  /* ---- buttons: always pills ---- */
+  .btn {
+    @apply inline-flex h-12 items-center justify-center gap-2 rounded-full px-7 text-[0.9375rem] font-bold tracking-[0.02em] whitespace-nowrap transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-sm {
+    @apply h-10 px-5 text-sm;
+  }
+  .btn-primary {
+    @apply bg-primary text-primary-fg hover:bg-primary-hover active:bg-primary-active;
+  }
+  .btn-secondary {
+    @apply border border-ash bg-transparent text-fg hover:bg-surface-2;
+  }
+  .btn-on-inverse {
+    @apply border border-white/30 bg-transparent text-inverse-fg hover:bg-white/10;
+  }
+  .btn-text {
+    @apply h-auto px-0 font-semibold text-link hover:underline;
+  }
+  .btn-danger {
+    @apply bg-danger text-white hover:opacity-90 dark:text-black;
+  }
+
+  /* ---- forms ---- */
+  .input {
+    @apply h-12 w-full rounded-[4px] border border-ash bg-surface px-4 text-base text-fg placeholder:text-muted focus:border-2 focus:border-primary focus:px-[15px] focus:outline-none;
+  }
+  textarea.input {
+    @apply h-auto py-3 focus:py-[11px];
+  }
+  .label {
+    @apply mb-2 block text-sm font-semibold;
+  }
+  .field-error {
+    @apply mt-1.5 text-sm text-danger;
+  }
+  .chip {
+    @apply inline-flex h-10 cursor-pointer items-center justify-center rounded-full border border-ash px-4 text-sm font-semibold select-none hover:bg-surface-2;
+  }
+  .chip-on {
+    @apply border-fg bg-fg text-bg hover:bg-fg;
+  }
+  .skeleton {
+    @apply animate-pulse rounded-lg bg-surface-2;
+  }
+}
+
+@keyframes rise {
+  from { transform: translateY(8px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes ring-draw {
+  from { stroke-dashoffset: var(--ring-len); }
+}
+.animate-rise { animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.animate-ring { animation: ring-draw 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
