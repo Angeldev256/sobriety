@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { PathForward } from "@/components/illustrations";
 
 const QUOTES = [
   "Every day you show up counts.",
@@ -14,6 +15,7 @@ export function AuthShell({ children, quote = 0 }: { children: ReactNode; quote?
       <section className="hidden flex-col justify-between bg-black p-12 text-white md:flex">
         <Link href="/" className="text-lg font-light tracking-tight">Sobriety Tracker</Link>
         <div>
+          <PathForward className="mb-10 aspect-[16/9] w-full max-w-md rounded-lg" />
           <p className="display-lg max-w-md">{QUOTES[quote % QUOTES.length]}</p>
           <ul className="mt-10 space-y-3 text-sm text-white/65">
             <li>Private by design — only you can see your data.</li>

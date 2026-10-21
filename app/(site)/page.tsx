@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LakeCalm, SunriseHills, SupportCircle } from "@/components/illustrations";
 import { SoberCalculator } from "@/components/sober-calculator";
 import { InstallAppButton } from "@/components/pwa/install-app-button";
 import { publicMessageOfTheDay } from "@/lib/data";
@@ -16,9 +17,10 @@ const OPEN_TOOLS = [
 const WHEN_READY = [
   { title: "A sober-time counter", body: "Every day, hour and minute — for one addiction or several, with money saved." },
   { title: "One-minute check-ins", body: "Mood, cravings and triggers, so patterns become visible over time." },
+  { title: "Your support circle", body: "Invite a counsellor, sponsor or family member. Message them and talk by voice or video call — or on WhatsApp." },
   { title: "Gentle reminders", body: "By email or phone notification, at a time you choose. Discreet wording, always." },
   { title: "Milestones worth marking", body: "From day one to year one, each milestone is celebrated — and you'll get a note." },
-  { title: "Goals and progress", body: "Small steps, a calendar of your days, and trends that show how far you've come." },
+  { title: "Money saved, in shillings", body: "See what you've kept in your pocket — school fees, rent, savings — every day you stay free." },
   { title: "Kindness after a slip", body: "Log it without shame. Your history and longest streak always stay with you." },
 ];
 
@@ -36,12 +38,13 @@ export default async function Home({ searchParams }: PageProps<"/">) {
       )}
 
       <section className="bg-black text-white">
-        <div className="mx-auto max-w-6xl px-5 pt-16 pb-20 sm:px-6 md:pt-28 md:pb-32">
-          <p className="text-xs font-medium tracking-[0.08em] text-white/60 uppercase">Free · Private · Judgment-free</p>
+        <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 pt-14 pb-20 sm:px-6 md:grid-cols-[1.1fr_1fr] md:pt-24 md:pb-28">
+          <div>
+          <p className="text-xs font-medium tracking-[0.08em] text-white/60 uppercase">Free · Private · Made for Uganda</p>
           <h1 className="display-xl mt-6 max-w-3xl">Recovery, one day at a time.</h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/70">
-            Support for anyone recovering from alcohol, nicotine, drugs, gambling or anything else. Use the coping tools right now —
-            and when you&apos;re ready, track your progress privately.
+            Support for anyone recovering from alcohol, betting, drugs like mairungi, tobacco or anything else. Use the coping tools
+            right now — and when you&apos;re ready, track your progress and stay close to the people supporting you.
           </p>
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <Link href={start.href} className="btn btn-primary">{start.label}</Link>
@@ -50,6 +53,8 @@ export default async function Home({ searchParams }: PageProps<"/">) {
           <div className="mt-4">
             <InstallAppButton tone="inverse" className="btn-sm" />
           </div>
+          </div>
+          <SunriseHills title="Sunrise over green hills, with a person standing on the crest" className="aspect-[10/7] w-full rounded-lg" />
         </div>
       </section>
 
@@ -108,12 +113,28 @@ export default async function Home({ searchParams }: PageProps<"/">) {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-6xl gap-8 px-5 py-20 sm:px-6 md:grid-cols-2 md:py-24">
+      <section aria-labelledby="circle-h" className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-20 sm:px-6 md:grid-cols-2 md:py-24">
+        <SupportCircle title="Three people standing together" className="order-last aspect-[16/11] w-full rounded-lg md:order-first" />
+        <div>
+          <p className="eyebrow">Support circle</p>
+          <h2 id="circle-h" className="display-lg mt-3">Someone in your corner.</h2>
+          <p className="mt-5 text-lg leading-relaxed text-body">
+            Recovery is easier together. Add the people who support you — a counsellor, a sponsor, a faith leader, family. When a
+            craving hits, call them by video or voice in one tap, or send a message.
+          </p>
+          <Link href={viewer ? "/support" : start.href} className="btn btn-primary mt-8">{viewer ? "Open your support circle" : "Build your circle — free"}</Link>
+        </div>
+      </section>
+
+      <section className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-20 sm:px-6 md:grid-cols-2 md:py-24">
+        <div>
         <h2 className="display-lg">Your privacy comes first.</h2>
-        <div className="space-y-4 text-lg leading-relaxed text-body">
+        <div className="mt-6 space-y-4 text-lg leading-relaxed text-body">
           <p>Only you can see what you track. We never sell or share your data, and you can export or permanently delete it any time.</p>
           <p>Notifications are worded discreetly, so nothing personal shows on your lock screen.</p>
         </div>
+        </div>
+        <LakeCalm title="A canoe on calm water at dawn, papyrus at the shore" className="aspect-[16/11] w-full rounded-lg" />
       </section>
     </main>
   );

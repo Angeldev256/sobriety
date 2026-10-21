@@ -6,6 +6,27 @@ export type CountryHelplines = { code: string; name: string; emergency: string; 
 
 export const HELPLINES: CountryHelplines[] = [
   {
+    code: "UG",
+    name: "Uganda",
+    emergency: "999 or 112",
+    lines: [
+      { name: "Mental Health Uganda helpline", description: "Free, confidential support for mental health and substance use.", phone: "0800 21 21 21" },
+      { name: "Butabika National Referral Hospital", description: "Kampala. Uganda's national mental health hospital, with an alcohol and drug unit." },
+      { name: "Uganda Youth Development Link (UYDEL)", description: "Drug and alcohol counselling and rehabilitation for young people.", url: "https://www.uydel.org" },
+      { name: "Sauti Child Helpline", description: "Free 24/7 line for children and young people.", phone: "116" },
+      { name: "Alcoholics Anonymous", description: "Meetings in Kampala and online, free to attend.", url: "https://www.aa.org/find-aa" },
+    ],
+  },
+  {
+    code: "KE",
+    name: "Kenya",
+    emergency: "999 or 112",
+    lines: [
+      { name: "NACADA helpline", description: "Free alcohol and drug abuse helpline.", phone: "1192" },
+      { name: "Befrienders Kenya", description: "Emotional support.", url: "https://www.befrienderskenya.org" },
+    ],
+  },
+  {
     code: "US",
     name: "United States",
     emergency: "911",
@@ -86,5 +107,5 @@ export const HELPLINES: CountryHelplines[] = [
 ];
 
 export function helplinesFor(code: string | null | undefined): CountryHelplines {
-  return HELPLINES.find((c) => c.code === code) ?? HELPLINES[HELPLINES.length - 1];
+  return HELPLINES.find((c) => c.code === code) ?? HELPLINES[0];
 }

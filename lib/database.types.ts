@@ -123,7 +123,48 @@ export type PushSubscriptionRow = {
   created_at: string;
 };
 
-export type NotificationKind = "welcome" | "reminder" | "milestone" | "encouragement" | "system";
+export type NotificationKind = "welcome" | "reminder" | "milestone" | "encouragement" | "system" | "message" | "call" | "support";
+
+export type Relationship = "counselor" | "sponsor" | "family" | "friend" | "peer" | "health_worker" | "faith_leader" | "other";
+export type ConnectionStatus = "pending" | "active" | "declined" | "ended";
+
+export type SupportConnection = {
+  id: string;
+  member_id: string;
+  member_name: string;
+  helper_id: string | null;
+  helper_name: string;
+  helper_email: string;
+  relationship: Relationship;
+  phone: string | null;
+  is_preferred: boolean;
+  share_progress: boolean;
+  status: ConnectionStatus;
+  invite_token: string;
+  created_at: string;
+  accepted_at: string | null;
+};
+
+export type SupportMessage = {
+  id: string;
+  connection_id: string;
+  sender_id: string;
+  body: string;
+  created_at: string;
+  read_at: string | null;
+};
+
+export type CallKind = "audio" | "video";
+
+export type CallLog = {
+  id: string;
+  connection_id: string;
+  caller_id: string;
+  kind: CallKind;
+  status: "completed" | "missed" | "declined" | "failed";
+  duration_seconds: number;
+  created_at: string;
+};
 
 export type AppNotification = {
   id: string;
@@ -151,10 +192,22 @@ export type Database = {
       reminder_settings: Table<ReminderSetting, "user_id">;
       push_subscriptions: Table<PushSubscriptionRow, "user_id" | "endpoint" | "p256dh" | "auth">;
       notifications: Table<AppNotification, "user_id" | "kind" | "title" | "body">;
+      support_connections: Table<SupportConnection, "member_id" | "member_name" | "helper_name" | "helper_email" | "relationship">;
+      support_messages: Table<SupportMessage, "connection_id" | "sender_id" | "body">;
+      call_logs: Table<CallLog, "connection_id" | "caller_id" | "kind" | "status">;
     };
     Views: { [_ in never]: never };
     Functions: {
       delete_my_account: { Args: Record<string, never>; Returns: undefined };
+      get_support_invite: {
+        Args: { token: string };
+        Returns: { member_name: string | null; helper_name: string; relationship: Relationship; status: ConnectionStatus; email_matches: boolean; is_self: boolean }[];
+      };
+      accept_support_invite: { Args: { token: string }; Returns: string };
+      decline_support_invite: { Args: { token: string }; Returns: undefined };
+      end_support_connection: { Args: { conn: string }; Returns: undefined };
+      mark_support_read: { Args: { conn: string }; Returns: undefined };
+      get_shared_progress: { Args: { conn: string }; Returns: { label: string | null; type: AddictionType; start_date: string }[] };
     };
     Enums: { [_ in never]: never };
     CompositeTypes: { [_ in never]: never };

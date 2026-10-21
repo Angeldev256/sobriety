@@ -42,8 +42,7 @@ export default async function SettingsPage() {
         <p className="eyebrow">Settings</p>
         <h1 className="display-lg mt-3">Your account</h1>
         <nav aria-label="Account" className="mt-8 flex flex-wrap gap-2 lg:hidden">
-          <Link href="/goals" className="chip">Goals</Link>
-          <Link href="/milestones" className="chip">Milestones</Link>
+          <Link href="/support" className="chip">Support circle</Link>
           <Link href="/notifications" className="chip">Notifications</Link>
           <Link href="#notifications" className="chip">Reminders</Link>
         </nav>

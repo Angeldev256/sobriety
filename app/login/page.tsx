@@ -3,6 +3,7 @@ import Link from "next/link";
 import { AuthShell } from "@/components/auth/auth-shell";
 import { SignInForm, SignUpForm } from "@/components/auth/auth-forms";
 import { GoogleSignInButton } from "@/components/google-sign-in-button";
+import { isSupabaseConfigured } from "@/lib/env";
 import { safeNextPath } from "@/lib/safe-redirect";
 
 export const metadata: Metadata = { title: "Sign in" };
@@ -16,6 +17,7 @@ const PAGE_LABELS: Record<string, string> = {
   "/dashboard": "your overview",
   "/check-in": "check-ins",
   "/goals": "goals",
+  "/support": "your support circle",
   "/milestones": "milestones",
   "/history": "your progress",
   "/notifications": "notifications",
@@ -28,11 +30,30 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
   const next = safeNextPath(rawNext);
   const mode = params.mode === "signup" ? "signup" : "signin";
   const error = typeof params.error === "string" ? ERRORS[params.error] : undefined;
-  const gatedFeature = rawNext ? PAGE_LABELS[next.split("?")[0]] : undefined;
+  const nextPath = next.split("?")[0];
+  const isInvite = Boolean(rawNext) && nextPath.startsWith("/support/invite/");
+  const gatedFeature = rawNext && !isInvite ? Object.entries(PAGE_LABELS).find(([k]) => nextPath === k || nextPath.startsWith(`${k}/`))?.[1] : undefined;
   const tab = (m: string) => `/login?${new URLSearchParams({ mode: m, ...(rawNext ? { next } : {}) })}`;
 
   return (
     <AuthShell quote={mode === "signup" ? 1 : 0}>
+      {!isSupabaseConfigured() && (
+        <div role="alert" className="mb-8 rounded-lg border border-danger p-5">
+          <p className="font-semibold text-danger">Sign-in isn&apos;t connected yet</p>
+          <p className="caption mt-1">
+            This copy of the app has no Supabase project configured, so accounts can&apos;t be created. Add the project URL and
+            publishable key to <code>.env.local</code> (see the README), then restart the server.
+          </p>
+        </div>
+      )}
+      {isInvite && (
+        <div className="mb-8 rounded-lg bg-surface-2 p-5">
+          <p className="font-semibold">You&apos;ve been invited to a support circle</p>
+          <p className="caption mt-1">
+            Sign in, or create a free account with the email address the invitation was sent to. You&apos;ll come straight back to accept it.
+          </p>
+        </div>
+      )}
       {gatedFeature && (
         <div className="mb-8 rounded-lg bg-surface-2 p-5">
           <p className="font-semibold">Sign in to start tracking</p>
@@ -73,12 +94,16 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
 
       <div className="mt-8">{mode === "signup" ? <SignUpForm next={next} /> : <SignInForm next={next} />}</div>
 
-      <div className="my-8 flex items-center gap-4 text-xs text-muted" aria-hidden>
-        <span className="h-px flex-1 bg-border" />
-        or
-        <span className="h-px flex-1 bg-border" />
-      </div>
-      <GoogleSignInButton next={next} />
+      {process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED === "true" && (
+        <>
+          <div className="my-8 flex items-center gap-4 text-xs text-muted" aria-hidden>
+            <span className="h-px flex-1 bg-border" />
+            or
+            <span className="h-px flex-1 bg-border" />
+          </div>
+          <GoogleSignInButton next={next} />
+        </>
+      )}
 
       <p className="caption mt-10">
         Not ready to sign up? You can still use the <Link href="/toolkit" className="link">coping toolkit</Link> and{" "}

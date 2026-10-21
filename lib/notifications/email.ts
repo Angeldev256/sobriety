@@ -7,7 +7,23 @@ import { APP_NAME, env } from "@/lib/env";
 
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
-function layout({ preheader, heading, body, cta }: { preheader: string; heading: string; body: string[]; cta?: { label: string; url: string } }) {
+function layout({
+  preheader,
+  heading,
+  body,
+  cta,
+  footer = "notifications",
+}: {
+  preheader: string;
+  heading: string;
+  body: string[];
+  cta?: { label: string; url: string };
+  footer?: "notifications" | "invite";
+}) {
+  const footerText =
+    footer === "invite"
+      ? "Someone entered your email address to invite you. If you weren't expecting this, you can ignore it — nothing happens unless you accept."
+      : `You're receiving this because you turned on email notifications. You can change this any time in <a href="${env.siteUrl}/settings#notifications" style="color:#0064b7">Settings</a>.`;
   const paragraphs = body.map((p) => `<p style="margin:0 0 16px;font-size:16px;line-height:1.6;color:#333333">${esc(p)}</p>`).join("");
   const button = cta
     ? `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:28px 0 8px"><tr><td style="border-radius:999px;background:#0070d1">
@@ -25,8 +41,7 @@ function layout({ preheader, heading, body, cta }: { preheader: string; heading:
       ${paragraphs}${button}
     </td></tr>
     <tr><td style="padding:24px 32px;border-top:1px solid #ececec;font-size:12px;line-height:1.6;color:#6b6b6b">
-      You're receiving this because you turned on email notifications. You can change this any time in
-      <a href="${env.siteUrl}/settings#notifications" style="color:#0064b7">Settings</a>.<br>
+      ${footerText}<br>
       Need support right now? <a href="${env.siteUrl}/help" style="color:#0064b7">Find a help line</a>.
     </td></tr>
   </table>
@@ -36,6 +51,18 @@ function layout({ preheader, heading, body, cta }: { preheader: string; heading:
 export type EmailContent = { subject: string; html: string; text: string };
 
 export const emailTemplates = {
+  supportInvite(memberName: string, relationship: string, link: string): EmailContent {
+    const body = [
+      `${memberName} has invited you to be part of their support circle on ${APP_NAME}, as their ${relationship.toLowerCase()}.`,
+      "Being in someone's circle means they can message you and call you by voice or video through the app when they need support. You won't see their private notes or check-ins.",
+      "If you don't know this person or would rather not, you can simply ignore this email.",
+    ];
+    return {
+      subject: `${memberName} invited you to their support circle`,
+      html: layout({ preheader: `${memberName} would like your support.`, heading: "You've been asked to help.", body, cta: { label: "View the invitation", url: link }, footer: "invite" }),
+      text: `${body.join("\n\n")}\n\nView the invitation: ${link}`,
+    };
+  },
   welcome(name: string): EmailContent {
     const body = [
       `Hi ${name}, welcome. Choosing to start is one of the bravest things a person can do, and we're glad you're here.`,

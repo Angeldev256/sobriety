@@ -19,6 +19,24 @@ A free, private, judgment-free web app for people in addiction recovery. Anyone 
 - **Settings.** Profile, time zone, country, light/dark/system theme, CSV/JSON export, and permanent account deletion.
 - **Installable PWA.** A manifest, a service worker, an offline page and an "Install app" button, with Add to Home Screen instructions on iOS.
 
+### Made for Uganda
+
+- New accounts default to Uganda: Kampala time, Ugandan shillings (UGX) for money saved, and Ugandan help lines first.
+- Trackers use local wording: betting, waragi and local brews, mairungi (khat).
+- Phone numbers accept local formats such as `0772 123 456`.
+- **Verify the Ugandan help-line numbers in `lib/helplines.ts` before launch.** Lines in a crisis app must be current.
+
+### Support circle (preferred helper)
+
+- A member invites a counsellor, sponsor, health worker, faith leader, family member or friend by email. The invite link can also be shared on WhatsApp.
+- The helper signs in with that email and accepts. Either person can end the connection at any time.
+- Once connected, they can use:
+  - **chat:** live updates, with a phone notification that doesn't include the message text
+  - **in-app video and voice calls:** WebRTC, peer-to-peer and not recorded
+  - **one-tap WhatsApp and phone buttons:** a fallback when mobile data is weak
+- One helper can be marked **preferred**. They then appear on the overview and on the Get help page.
+- Helpers never see check-ins, notes or relapses. A member can choose to share their sober days.
+
 ## Tech stack
 
 | Area      | Choice |
@@ -26,7 +44,8 @@ A free, private, judgment-free web app for people in addiction recovery. Anyone 
 | Framework | Next.js 16 (App Router, Server Components, Server Actions), TypeScript |
 | Styling   | Tailwind CSS 4, custom calming design tokens, light and dark mode |
 | Database  | Supabase Postgres with **Row Level Security** on every table |
-| Auth      | Supabase Auth with the Google OAuth provider, cookie sessions via `@supabase/ssr` |
+| Auth      | Supabase Auth (email and password, optional Google), cookie sessions via `@supabase/ssr` |
+| Calls and chat | WebRTC, with Supabase Realtime (private channels) for signalling and live chat |
 | Validation | Zod on every Server Action and form |
 | Charts and dates | Recharts, date-fns + `@date-fns/tz` |
 | Email     | Resend (optional) |
@@ -70,7 +89,7 @@ npm install
 
 1. Create a free project at <https://supabase.com/dashboard>.
 2. Apply the database migrations. Use **either** of these:
-   - **SQL Editor:** paste and run the three files in `supabase/migrations/` in order (`…01_schema`, `…02_seed_content`, `…03_notifications_and_guest`).
+   - **SQL Editor:** paste and run the four files in `supabase/migrations/` in order (`…01_schema`, `…02_seed_content`, `…03_notifications_and_guest`, `…04_support_circle_uganda`).
    - **CLI:** `npx supabase link --project-ref <your-ref>` and then `npx supabase db push`.
 
    Together they create the tables, the RLS policies, the profile trigger, the account-deletion function, the 14 badges and the 55 motivational messages.
@@ -79,7 +98,11 @@ npm install
 
 **Email and password:** go to **Authentication → Sign In / Providers** and make sure **Email** is enabled. Keep **Confirm email** on (recommended). Optionally, turn on leaked-password protection.
 
-**Google (optional):**
+**Confirmation emails:** Supabase's built-in email service only delivers to your own team's addresses. To let anyone sign up, either set up custom SMTP under **Authentication → Emails → SMTP settings** (for example Resend, Brevo or Mailgun), or, while testing, turn off **Confirm email**.
+
+**Use the project URL, not the REST URL:** `NEXT_PUBLIC_SUPABASE_URL` should be `https://<ref>.supabase.co`, with nothing after `.co`. The app strips a pasted `/rest/v1/` automatically, but it's best to keep the value clean.
+
+**Google (optional):** once the provider below is enabled, set `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true`. The Google button stays hidden until then.
 
 1. In [Google Cloud Console](https://console.cloud.google.com/apis/credentials), create an **OAuth client ID** of type **Web application**. You'll need to configure the OAuth consent screen first if you haven't.
    - **Authorized JavaScript origins:** `http://localhost:3000` and your production URL.
@@ -146,6 +169,22 @@ npx web-push generate-vapid-keys
 ```
 
 Put the keys in `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` and `VAPID_SUBJECT` (a `mailto:` address). Members turn push on per device under **Settings → Notifications**, where they can also send themselves a test. On iPhone and iPad, push only works after the app is added to the Home Screen (iOS 16.4 or later).
+
+## Calls
+
+Video and voice calls use WebRTC. Signalling runs over private Supabase Realtime channels, protected by the policies in migration 4.
+
+- **Public STUN:** with this alone, calls connect on most Wi-Fi.
+- **Mobile networks (MTN, Airtel):** many sit behind carrier NAT and need a **TURN relay**. Add one to `.env.local`, for example from Metered, Twilio or Cloudflare Calls:
+
+  ```
+  NEXT_PUBLIC_TURN_URLS=turn:your-turn-host:3478,turns:your-turn-host:5349
+  NEXT_PUBLIC_TURN_USERNAME=...
+  NEXT_PUBLIC_TURN_CREDENTIAL=...
+  ```
+
+- **Ringing a closed app:** to wake a helper whose app is closed, set `SUPABASE_SECRET_KEY` and the web push keys. The incoming call then arrives as a phone notification.
+- **WhatsApp and phone buttons:** these always work as a fallback.
 
 ## Deployment (Vercel + Supabase)
 

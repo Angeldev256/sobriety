@@ -5,9 +5,23 @@ function required(name: string, value: string | undefined): string {
 
 export const APP_NAME = "Sobriety Tracker";
 
+/**
+ * The Supabase project URL reduced to its origin. People often paste the REST endpoint
+ * (https://<ref>.supabase.co/rest/v1/) by mistake; the clients need just the origin.
+ */
+export function supabaseOrigin(): string {
+  const raw = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").trim();
+  try {
+    return new URL(raw).origin;
+  } catch {
+    return raw;
+  }
+}
+
 export const env = {
   get supabaseUrl() {
-    return required("NEXT_PUBLIC_SUPABASE_URL", process.env.NEXT_PUBLIC_SUPABASE_URL);
+    required("NEXT_PUBLIC_SUPABASE_URL", process.env.NEXT_PUBLIC_SUPABASE_URL);
+    return supabaseOrigin();
   },
   get supabaseKey() {
     return required("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY);
@@ -43,3 +57,16 @@ export const env = {
     return Boolean(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY);
   },
 };
+
+/**
+ * True once real Supabase credentials are in place (not the .env.example placeholders).
+ * Safe to call on the server and in the browser — it only reads NEXT_PUBLIC_* values.
+ */
+export function isSupabaseConfigured(): boolean {
+  const url = supabaseOrigin();
+  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? "";
+  return /^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(url) && !url.includes("your-project-ref") && key.length > 20 && !key.endsWith("xxx");
+}
+
+export const NOT_CONFIGURED_MESSAGE =
+  "Sign-in isn't connected yet. The app's Supabase project still needs to be set up — see the README.";

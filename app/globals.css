@@ -31,6 +31,12 @@
   --inverse-muted: rgba(255, 255, 255, 0.62);
   --inverse-border: rgba(229, 229, 229, 0.2);
   --ring: #0070d1;
+  --illo-sky: #eef4fa;
+  --illo-sun: #f2b35a;
+  --illo-hill-1: #c9def2;
+  --illo-hill-2: #7fb0de;
+  --illo-hill-3: #0070d1;
+  --illo-ink: #0b1b2b;
   color-scheme: light;
 }
 
@@ -57,6 +63,12 @@
   --inverse-muted: rgba(255, 255, 255, 0.62);
   --inverse-border: rgba(229, 229, 229, 0.2);
   --ring: #53b1ff;
+  --illo-sky: #0c1622;
+  --illo-sun: #e7a54a;
+  --illo-hill-1: #132a42;
+  --illo-hill-2: #1c4670;
+  --illo-hill-3: #0a5aa6;
+  --illo-ink: #e9f1f8;
   color-scheme: dark;
 }
 
@@ -136,7 +148,7 @@ body {
 
   /* ---- buttons: always pills ---- */
   .btn {
-    @apply inline-flex h-12 items-center justify-center gap-2 rounded-full px-7 text-[0.9375rem] font-bold tracking-[0.02em] whitespace-nowrap transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex h-12 items-center justify-center gap-2 rounded-full px-7 text-[0.9375rem] font-bold tracking-[0.02em] whitespace-nowrap transition-[background-color,color,transform] duration-150 select-none active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100;
   }
   .btn-sm {
     @apply h-10 px-5 text-sm;
@@ -188,10 +200,18 @@ body {
 @keyframes ring-draw {
   from { stroke-dashoffset: var(--ring-len); }
 }
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
 .animate-rise { animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.animate-page { animation: page-in 0.32s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+
+html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
 .animate-ring { animation: ring-draw 1.2s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
 
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

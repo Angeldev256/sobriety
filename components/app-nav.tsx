@@ -3,30 +3,30 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ComponentType } from "react";
-import { AccountIcon, CheckInIcon, HelpIcon, HistoryIcon, HomeIcon, PlusIcon, ToolkitIcon } from "@/components/icons";
+import { AccountIcon, CheckInIcon, HelpIcon, HistoryIcon, HomeIcon, PlusIcon, SupportIcon, ToolkitIcon } from "@/components/icons";
 
 type Item = { href: string; label: string };
 type Tab = Item & { Icon: ComponentType<{ className?: string }>; match?: string[]; emphasis?: boolean };
 
-const MEMBER_TOP: Item[] = [
-  { href: "/dashboard", label: "Today" },
+type TopItem = Item & { match?: string[] };
+const MEMBER_TOP: TopItem[] = [
+  { href: "/dashboard", label: "Today", match: ["/dashboard", "/relapse"] },
   { href: "/check-in", label: "Check in" },
-  { href: "/goals", label: "Goals" },
-  { href: "/milestones", label: "Milestones" },
-  { href: "/history", label: "Progress" },
+  { href: "/support", label: "Support" },
+  { href: "/history", label: "Progress", match: ["/history", "/milestones", "/goals"] },
   { href: "/toolkit", label: "Toolkit" },
 ];
-const GUEST_TOP: Item[] = [
+const GUEST_TOP: TopItem[] = [
   { href: "/toolkit", label: "Coping toolkit" },
   { href: "/help", label: "Help lines" },
 ];
 
 const MEMBER_TABS: Tab[] = [
-  { href: "/dashboard", label: "Today", Icon: HomeIcon, match: ["/dashboard", "/goals", "/milestones", "/relapse"] },
+  { href: "/dashboard", label: "Today", Icon: HomeIcon, match: ["/dashboard", "/relapse"] },
   { href: "/check-in", label: "Check in", Icon: CheckInIcon },
+  { href: "/support", label: "Support", Icon: SupportIcon },
+  { href: "/history", label: "Progress", Icon: HistoryIcon, match: ["/history", "/milestones", "/goals"] },
   { href: "/toolkit", label: "Toolkit", Icon: ToolkitIcon },
-  { href: "/history", label: "Progress", Icon: HistoryIcon },
-  { href: "/settings", label: "Account", Icon: AccountIcon, match: ["/settings", "/notifications"] },
 ];
 const GUEST_TABS: Tab[] = [
   { href: "/", label: "Home", Icon: HomeIcon },
@@ -48,7 +48,7 @@ export function TopNav({ signedIn }: { signedIn: boolean }) {
     <nav aria-label="Main" className="hidden h-full lg:block">
       <ul className="flex h-full items-stretch gap-7">
         {items.map((l) => {
-          const active = isActive(pathname, l.href);
+          const active = isActive(pathname, l.href, l.match);
           return (
             <li key={l.href} className="flex">
               <Link

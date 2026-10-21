@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { isSupabaseConfigured, NOT_CONFIGURED_MESSAGE } from "@/lib/env";
 import { createClient } from "@/lib/supabase/client";
 
 export function GoogleSignInButton({ next }: { next: string }) {
@@ -8,17 +9,22 @@ export function GoogleSignInButton({ next }: { next: string }) {
   const [error, setError] = useState<string | null>(null);
 
   async function signIn() {
-    setPending(true);
     setError(null);
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
-        queryParams: { prompt: "select_account" },
-      },
-    });
-    if (error) {
+    if (!isSupabaseConfigured()) {
+      setError(NOT_CONFIGURED_MESSAGE);
+      return;
+    }
+    setPending(true);
+    try {
+      const { error } = await createClient().auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
+          queryParams: { prompt: "select_account" },
+        },
+      });
+      if (error) throw error;
+    } catch {
       setError("Couldn't reach Google. Check your connection and try again.");
       setPending(false);
     }

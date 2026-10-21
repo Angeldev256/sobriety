@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { LakeCalm } from "@/components/illustrations";
 import { BreathingExercise } from "@/components/toolkit/breathing-exercise";
 import { Grounding } from "@/components/toolkit/grounding";
 import { UrgeTimer } from "@/components/toolkit/urge-timer";
@@ -43,12 +44,15 @@ export default async function ToolkitPage() {
 
   return (
     <main className="mx-auto w-full max-w-6xl flex-1 px-5 pt-10 pb-16 sm:px-6 md:pt-16">
-      <header className="max-w-2xl">
-        <p className="eyebrow">Coping toolkit · Free for everyone</p>
-        <h1 className="display-xl mt-4">For the hard moments.</h1>
-        <p className="mt-5 text-lg leading-relaxed text-body">
-          Cravings and difficult feelings pass. These tools can help you ride them out — no account needed.
-        </p>
+      <header className="grid items-center gap-10 md:grid-cols-[1.2fr_1fr]">
+        <div>
+          <p className="eyebrow">Coping toolkit · Free for everyone</p>
+          <h1 className="display-xl mt-4">For the hard moments.</h1>
+          <p className="mt-5 max-w-xl text-lg leading-relaxed text-body">
+            Cravings and difficult feelings pass. These tools can help you ride them out — no account needed.
+          </p>
+        </div>
+        <LakeCalm className="hidden aspect-[16/10] w-full rounded-lg md:block" />
       </header>
 
       <nav aria-label="Tools" className="sticky top-14 z-20 -mx-5 mt-10 overflow-x-auto bg-bg/95 px-5 py-3 backdrop-blur sm:-mx-6 sm:px-6">

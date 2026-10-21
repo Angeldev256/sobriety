@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
-import { createGoal, updateGoal } from "@/app/(app)/goals/actions";
+import { createGoal, updateGoal } from "@/app/(app)/(progress)/goals/actions";
 import { FieldError, FormMessage } from "@/components/form-message";
 import type { Goal } from "@/lib/database.types";
 import { GOAL_STATUSES } from "@/lib/constants";

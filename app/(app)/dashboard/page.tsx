@@ -13,6 +13,10 @@ import { nextMilestone } from "@/lib/recovery/milestones";
 import { currentCheckInStreak, longestSoberStreakDays } from "@/lib/recovery/streaks";
 import { localTimeString, safeTimeZone, shiftDate, soberDuration } from "@/lib/recovery/time";
 import { formatMoney, moneySaved } from "@/lib/recovery/money";
+import { getViewer } from "@/lib/session";
+import { peerOf, relationshipLabel } from "@/lib/support";
+import { CallButtons } from "@/components/support/call-buttons";
+import { SunriseHills } from "@/components/illustrations";
 import { requireUser } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Overview" };
@@ -30,9 +34,24 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
   const addictions = await getActiveAddictions(supabase, user.id);
   const firstName = profile.display_name?.split(" ")[0] ?? "friend";
 
+  const viewer = await getViewer();
+  const peers = (viewer?.connections ?? []).map((c) => peerOf(c, user.id));
+  const preferred = peers.find((p) => p.isPreferred) ?? peers.find((p) => p.viewerIsMember);
+  const supporting = peers.filter((p) => !p.viewerIsMember);
+
   if (addictions.length === 0) {
     return (
       <div className="mx-auto max-w-xl">
+        <SunriseHills className="mb-10 aspect-[16/7] w-full rounded-lg" />
+        {supporting.length > 0 && (
+          <Link href="/support" className="mb-10 flex items-center justify-between gap-4 rounded-lg bg-surface-2 p-6 hover:bg-surface-3">
+            <span>
+              <span className="block font-semibold">You&apos;re supporting {supporting.map((p) => p.peerName).join(", ")}</span>
+              <span className="caption">Message or call them from your support circle.</span>
+            </span>
+            <span className="text-sm font-semibold text-link">Open</span>
+          </Link>
+        )}
         <p className="eyebrow">Welcome</p>
         <h1 className="display-lg mt-3">Let&apos;s begin, {firstName}.</h1>
         <p className="mt-4 text-lg leading-relaxed text-body">
@@ -188,6 +207,29 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
           </div>
           <Link href="/settings#notifications" className="btn btn-secondary btn-sm shrink-0">Set up reminders</Link>
         </div>
+      )}
+
+      {preferred ? (
+        <section aria-labelledby="helper-h" className="flex flex-col gap-5 rounded-lg border border-border p-6 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 id="helper-h" className="eyebrow">{preferred.isPreferred ? "Your preferred helper" : "Your support circle"}</h2>
+            <p className="mt-2 text-xl font-light">
+              {preferred.peerName} <span className="text-base text-muted">· {relationshipLabel(preferred.relationship)}</span>
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Link href={`/support/${preferred.connectionId}`} className="btn btn-secondary btn-sm">Message</Link>
+            <CallButtons connectionId={preferred.connectionId} peerId={preferred.peerId} peerName={preferred.peerName} phone={preferred.phone} size="sm" />
+          </div>
+        </section>
+      ) : (
+        <Link href="/support" className="group flex items-center justify-between gap-6 rounded-lg bg-surface-2 p-6 hover:bg-surface-3">
+          <span>
+            <span className="heading-lg block">Add someone you trust</span>
+            <span className="caption mt-1 block">A counsellor, sponsor or family member you can message and call from the app.</span>
+          </span>
+          <span className="text-sm font-semibold text-link group-hover:underline">Set up</span>
+        </Link>
       )}
 
       <Link href="/toolkit" className="group flex items-center justify-between gap-6 rounded-lg border border-border p-6 hover:bg-surface-2">

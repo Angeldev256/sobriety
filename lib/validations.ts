@@ -108,3 +108,19 @@ export const emailOnlySchema = z.object({ email });
 export const newPasswordSchema = z
   .object({ password, confirm: z.string() })
   .refine((d) => d.password === d.confirm, { path: ["confirm"], message: "Passwords don't match." });
+
+// ---- support circle ----
+export const inviteHelperSchema = z.object({
+  helper_name: z.string().trim().min(1, "What do you call this person?").max(60),
+  helper_email: z.string().trim().toLowerCase().max(254).pipe(z.email("Please enter their email address.")),
+  relationship: z.enum(["counselor", "sponsor", "family", "friend", "peer", "health_worker", "faith_leader", "other"], {
+    error: "Please choose how you know them.",
+  }),
+  phone: z.string().trim().max(30).optional(),
+  is_preferred: z.boolean(),
+});
+
+export const supportMessageSchema = z.object({
+  connection_id: z.uuid(),
+  body: z.string().trim().min(1, "Write a message first.").max(2000, "Please keep messages under 2,000 characters."),
+});

@@ -141,3 +141,50 @@ describe("notification copy", () => {
     expect(reminderNotification("Sam", "x").title).toBe("Hi Sam");
   });
 });
+
+import { formatPhone, normalizePhone, peerOf, whatsappLink } from "@/lib/support";
+
+describe("Ugandan phone numbers", () => {
+  it("normalises local and international formats to +256", () => {
+    expect(normalizePhone("0772 123 456")).toBe("256772123456");
+    expect(normalizePhone("+256 772 123456")).toBe("256772123456");
+    expect(normalizePhone("00256772123456")).toBe("256772123456");
+    expect(normalizePhone("772123456")).toBe("256772123456");
+  });
+
+  it("rejects numbers that can't be valid", () => {
+    expect(normalizePhone("12345")).toBeNull();
+    expect(normalizePhone("2567721234")).toBeNull();
+    expect(normalizePhone("")).toBeNull();
+  });
+
+  it("keeps other countries' numbers", () => {
+    expect(normalizePhone("+254 712 345678")).toBe("254712345678");
+  });
+
+  it("formats for display and builds WhatsApp links", () => {
+    expect(formatPhone("256772123456")).toBe("+256 772 123 456");
+    expect(whatsappLink("256772123456")).toBe("https://wa.me/256772123456");
+  });
+});
+
+describe("support connections", () => {
+  const conn = {
+    id: "c1",
+    member_id: "m",
+    member_name: "Sam",
+    helper_id: "h",
+    helper_name: "Aunt Grace",
+    relationship: "family" as const,
+    phone: "256772123456",
+    is_preferred: true,
+  };
+
+  it("shows the helper to the member, with their phone", () => {
+    expect(peerOf(conn, "m")).toMatchObject({ peerId: "h", peerName: "Aunt Grace", viewerIsMember: true, phone: "256772123456", isPreferred: true });
+  });
+
+  it("shows the member to the helper, without the helper's own phone", () => {
+    expect(peerOf(conn, "h")).toMatchObject({ peerId: "m", peerName: "Sam", viewerIsMember: false, phone: null, isPreferred: false });
+  });
+});

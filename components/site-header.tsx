@@ -12,7 +12,8 @@ export function SiteHeader({ viewer }: { viewer: Viewer | null }) {
     <header className="sticky top-0 z-30 bg-black text-white">
       <div className="mx-auto flex h-14 max-w-6xl items-stretch justify-between gap-4 px-4 sm:px-6">
         <Link href={viewer ? "/dashboard" : "/"} className="flex shrink-0 items-center text-[1.0625rem] font-light tracking-tight">
-          Sobriety Tracker
+          <span className="sm:hidden">Sobriety</span>
+          <span className="hidden sm:inline">Sobriety Tracker</span>
         </Link>
 
         <TopNav signedIn={Boolean(viewer)} />
@@ -39,7 +40,7 @@ export function SiteHeader({ viewer }: { viewer: Viewer | null }) {
                   </span>
                 )}
               </Link>
-              <Link href="/settings" className="hidden items-center sm:flex" aria-label="Account and settings">
+              <Link href="/settings" className="flex items-center" aria-label="Account and settings">
                 {viewer.profile.avatar_url ? (
                   <Image src={viewer.profile.avatar_url} alt="" width={30} height={30} className="rounded-full" />
                 ) : (

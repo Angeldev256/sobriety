@@ -14,6 +14,9 @@ const KIND_LABEL: Record<NotificationKind, string> = {
   milestone: "Milestone",
   encouragement: "Encouragement",
   system: "Update",
+  message: "Message",
+  call: "Call",
+  support: "Support circle",
 };
 
 export default async function NotificationsPage() {

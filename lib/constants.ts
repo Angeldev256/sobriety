@@ -1,15 +1,16 @@
 import type { AddictionType, GoalStatus } from "@/lib/database.types";
 
-export const ADDICTION_TYPES: { value: AddictionType; label: string }[] = [
-  { value: "alcohol", label: "Alcohol" },
-  { value: "nicotine", label: "Nicotine" },
-  { value: "drugs", label: "Drugs" },
-  { value: "gambling", label: "Gambling" },
-  { value: "other", label: "Other" },
+// Labels and examples reflect what people in Uganda most often seek help with.
+export const ADDICTION_TYPES: { value: AddictionType; label: string; hint: string }[] = [
+  { value: "alcohol", label: "Alcohol", hint: "Beer, waragi, local brews" },
+  { value: "gambling", label: "Betting", hint: "Sports betting, casinos, slots" },
+  { value: "drugs", label: "Drugs", hint: "Marijuana, mairungi (khat), pills, others" },
+  { value: "nicotine", label: "Tobacco", hint: "Cigarettes, shisha, vapes" },
+  { value: "other", label: "Something else", hint: "Anything you want to cut out" },
 ];
 
 export function addictionMeta(type: AddictionType) {
-  return ADDICTION_TYPES.find((a) => a.value === type) ?? ADDICTION_TYPES[4];
+  return ADDICTION_TYPES.find((a) => a.value === type) ?? ADDICTION_TYPES[ADDICTION_TYPES.length - 1];
 }
 
 export function addictionName(a: { type: AddictionType; label: string | null }) {
@@ -29,6 +30,9 @@ export const TRIGGERS = [
   "Work",
   "Relationships",
   "Money worries",
+  "Payday",
+  "Betting adverts or tips",
+  "Weekend outings",
   "Physical pain",
   "Certain places",
   "Certain people",
@@ -57,4 +61,4 @@ export const GOAL_STATUSES: { value: GoalStatus; label: string }[] = [
   { value: "completed", label: "Completed" },
 ];
 
-export const CURRENCIES = ["USD", "GBP", "EUR", "CAD", "AUD", "NGN", "INR", "ZAR", "KES", "GHS"] as const;
+export const CURRENCIES = ["UGX", "KES", "TZS", "RWF", "USD", "GBP", "EUR"] as const;

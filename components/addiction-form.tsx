@@ -4,6 +4,7 @@ import { useActionState, useEffect, useState } from "react";
 import { createAddiction } from "@/app/(app)/dashboard/actions";
 import { FieldError, FormMessage } from "@/components/form-message";
 import { ADDICTION_TYPES } from "@/lib/constants";
+import type { AddictionType } from "@/lib/database.types";
 
 function nowLocalInput() {
   const d = new Date();
@@ -14,7 +15,7 @@ function nowLocalInput() {
 /** Start tracking an addiction. The local date/time is converted to an absolute instant in the browser. */
 export function AddictionForm({ onDone }: { onDone?: () => void }) {
   const [state, action, pending] = useActionState(createAddiction, null);
-  const [type, setType] = useState("alcohol");
+  const [type, setType] = useState<AddictionType>("alcohol");
   // Filled after mount: the server doesn't know the browser's time zone.
   const [local, setLocal] = useState("");
   const iso = local ? new Date(local).toISOString() : "";
@@ -40,6 +41,7 @@ export function AddictionForm({ onDone }: { onDone?: () => void }) {
             </label>
           ))}
         </div>
+        <p className="caption mt-3">{ADDICTION_TYPES.find((t) => t.value === type)?.hint}</p>
         <FieldError state={state} name="type" />
       </fieldset>
 
@@ -47,7 +49,7 @@ export function AddictionForm({ onDone }: { onDone?: () => void }) {
         <label htmlFor="label" className="label">
           Name <span className="font-normal text-muted">— optional</span>
         </label>
-        <input id="label" name="label" className="input" maxLength={60} placeholder={type === "other" ? "e.g. Social media" : "e.g. Wine"} />
+        <input id="label" name="label" className="input" maxLength={60} placeholder={{ alcohol: "e.g. Waragi", gambling: "e.g. Sports betting", drugs: "e.g. Mairungi", nicotine: "e.g. Cigarettes", other: "e.g. Social media" }[type]} />
         <FieldError state={state} name="label" />
       </div>
 
@@ -71,16 +73,16 @@ export function AddictionForm({ onDone }: { onDone?: () => void }) {
         <label htmlFor="reason" className="label">
           Why does this matter to you? <span className="font-normal text-muted">— optional, private</span>
         </label>
-        <textarea id="reason" name="reason" rows={2} maxLength={300} className="input" placeholder="e.g. To be present for my kids" />
+        <textarea id="reason" name="reason" rows={2} maxLength={300} className="input" placeholder="e.g. To be present for my children and keep my job" />
         <p className="caption mt-2">We&apos;ll show this back to you on hard days.</p>
         <FieldError state={state} name="reason" />
       </div>
 
       <div className="max-w-xs">
         <label htmlFor="daily_cost" className="label">
-          Roughly what did it cost per day? <span className="font-normal text-muted">— optional</span>
+          Roughly what did it cost per day, in shillings? <span className="font-normal text-muted">— optional</span>
         </label>
-        <input id="daily_cost" name="daily_cost" type="number" inputMode="decimal" min={0} step="0.01" className="input" placeholder="0.00" />
+        <input id="daily_cost" name="daily_cost" type="number" inputMode="numeric" min={0} step="any" className="input" placeholder="e.g. 10000" />
         <p className="caption mt-2">Used to show how much you&apos;ve saved.</p>
         <FieldError state={state} name="daily_cost" />
       </div>

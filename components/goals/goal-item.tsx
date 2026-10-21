@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { deleteGoal, setGoalStatus } from "@/app/(app)/goals/actions";
+import { deleteGoal, setGoalStatus } from "@/app/(app)/(progress)/goals/actions";
 import { GoalForm } from "@/components/goals/goal-form";
 import type { Goal } from "@/lib/database.types";
 import { GOAL_STATUSES } from "@/lib/constants";

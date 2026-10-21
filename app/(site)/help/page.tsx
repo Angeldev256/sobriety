@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { HELPLINES, helplinesFor } from "@/lib/helplines";
-import { createClient } from "@/lib/supabase/server";
+import { getViewer } from "@/lib/session";
+import { formatPhone, peerOf, relationshipLabel, telLink, whatsappLink } from "@/lib/support";
 
 export const metadata: Metadata = { title: "Get help now" };
 
@@ -18,16 +19,11 @@ const tel = (s: string) => `tel:${s.replace(/[^\d+]/g, "")}`;
 
 export default async function HelpPage({ searchParams }: PageProps<"/help">) {
   const params = await searchParams;
-  let code = typeof params.country === "string" ? params.country : null;
-  if (!code) {
-    const supabase = await createClient();
-    const { data } = await supabase.auth.getUser();
-    if (data.user) {
-      const { data: profile } = await supabase.from("profiles").select("country").eq("id", data.user.id).maybeSingle();
-      code = profile?.country ?? null;
-    }
-  }
-  const country = helplinesFor(code ?? "US");
+  const viewer = await getViewer();
+  const code = typeof params.country === "string" ? params.country : (viewer?.profile.country ?? "UG");
+  const country = helplinesFor(code);
+  const helpers = (viewer?.connections ?? []).map((c) => peerOf(c, viewer!.user.id)).filter((p) => p.viewerIsMember);
+  const helper = helpers.find((p) => p.isPreferred) ?? helpers[0];
 
   return (
     <main className="flex-1">
@@ -44,6 +40,28 @@ export default async function HelpPage({ searchParams }: PageProps<"/help">) {
             Signs of overdose or alcohol poisoning — unresponsive, slow or no breathing, blue lips, seizures — are a medical emergency.
           </p>
         </div>
+
+        {helper && (
+          <section aria-labelledby="my-helper-h" className="panel-inverse p-8">
+            <h2 id="my-helper-h" className="text-xs font-medium tracking-[0.08em] text-inverse-muted uppercase">
+              Reach {helper.isPreferred ? "your preferred helper" : "your helper"}
+            </h2>
+            <p className="mt-3 text-3xl font-light">{helper.peerName}</p>
+            <p className="text-sm text-inverse-muted">
+              {relationshipLabel(helper.relationship)}
+              {helper.phone ? ` · ${formatPhone(helper.phone)}` : ""}
+            </p>
+            <div className="mt-6 flex flex-wrap gap-2">
+              <Link href={`/support/${helper.connectionId}`} className="btn btn-primary">Call or message in the app</Link>
+              {helper.phone && (
+                <>
+                  <a href={whatsappLink(helper.phone)} target="_blank" rel="noopener noreferrer" className="btn btn-on-inverse">WhatsApp</a>
+                  <a href={telLink(helper.phone)} className="btn btn-on-inverse">Phone</a>
+                </>
+              )}
+            </div>
+          </section>
+        )}
 
         <section aria-labelledby="lines-heading">
           <div className="flex flex-wrap items-end justify-between gap-4">
