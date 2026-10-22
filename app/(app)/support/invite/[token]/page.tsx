@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { SupportCircle } from "@/components/illustrations";
+import { Photo } from "@/components/photo";
 import { InviteActions } from "@/components/support/invite-actions";
 import { relationshipLabel } from "@/lib/support";
 import { requireUser } from "@/lib/supabase/server";
@@ -74,7 +74,7 @@ export default async function InvitePage({ params }: PageProps<"/support/invite/
   return (
     <div className="mx-auto grid max-w-5xl gap-12 md:grid-cols-[1fr_18rem] md:items-center">
       <div>{body}</div>
-      <SupportCircle className="hidden aspect-square w-full rounded-lg md:block" />
+      <Photo name="conversation" sizes="288px" className="hidden aspect-[4/5] w-full rounded-lg md:block" />
     </div>
   );
 }

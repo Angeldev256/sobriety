@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SupportCircle } from "@/components/illustrations";
+import { Photo } from "@/components/photo";
 import { CallButtons } from "@/components/support/call-buttons";
 import { InviteHelperForm } from "@/components/support/invite-helper-form";
 import { PendingInvite } from "@/components/support/pending-invite";
@@ -58,7 +58,7 @@ export default async function SupportPage({ searchParams }: PageProps<"/support"
             video, right here — or on WhatsApp.
           </p>
         </div>
-        <SupportCircle className="hidden aspect-[16/10] w-full rounded-lg md:block" />
+        <Photo name="conversation" sizes="(min-width: 768px) 320px, 100vw" className="aspect-[16/10] w-full rounded-lg" />
       </header>
 
       {params.declined === "1" && (

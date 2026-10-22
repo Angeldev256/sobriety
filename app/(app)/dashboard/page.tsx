@@ -16,7 +16,7 @@ import { formatMoney, moneySaved } from "@/lib/recovery/money";
 import { getViewer } from "@/lib/session";
 import { peerOf, relationshipLabel } from "@/lib/support";
 import { CallButtons } from "@/components/support/call-buttons";
-import { SunriseHills } from "@/components/illustrations";
+import { Photo } from "@/components/photo";
 import { requireUser } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Overview" };
@@ -42,7 +42,7 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
   if (addictions.length === 0) {
     return (
       <div className="mx-auto max-w-xl">
-        <SunriseHills className="mb-10 aspect-[16/7] w-full rounded-lg" />
+        <Photo name="sunrise" sizes="(min-width: 640px) 576px, 100vw" priority className="mb-10 aspect-[16/8] w-full rounded-lg" />
         {supporting.length > 0 && (
           <Link href="/support" className="mb-10 flex items-center justify-between gap-4 rounded-lg bg-surface-2 p-6 hover:bg-surface-3">
             <span>

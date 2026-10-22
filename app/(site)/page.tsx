@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LakeCalm, SunriseHills, SupportCircle } from "@/components/illustrations";
+import { Photo } from "@/components/photo";
 import { SoberCalculator } from "@/components/sober-calculator";
 import { InstallAppButton } from "@/components/pwa/install-app-button";
 import { publicMessageOfTheDay } from "@/lib/data";
@@ -54,7 +54,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
             <InstallAppButton tone="inverse" className="btn-sm" />
           </div>
           </div>
-          <SunriseHills title="Sunrise over green hills, with a person standing on the crest" className="aspect-[10/7] w-full rounded-lg" />
+          <Photo name="sunrise" sizes="(min-width: 768px) 520px, 100vw" priority className="aspect-[4/3] w-full rounded-lg" />
         </div>
       </section>
 
@@ -114,7 +114,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
       </section>
 
       <section aria-labelledby="circle-h" className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-20 sm:px-6 md:grid-cols-2 md:py-24">
-        <SupportCircle title="Three people standing together" className="order-last aspect-[16/11] w-full rounded-lg md:order-first" />
+        <Photo name="friends" sizes="(min-width: 768px) 560px, 100vw" className="order-last aspect-[4/3] w-full rounded-lg md:order-first" />
         <div>
           <p className="eyebrow">Support circle</p>
           <h2 id="circle-h" className="display-lg mt-3">Someone in your corner.</h2>
@@ -134,7 +134,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
           <p>Notifications are worded discreetly, so nothing personal shows on your lock screen.</p>
         </div>
         </div>
-        <LakeCalm title="A canoe on calm water at dawn, papyrus at the shore" className="aspect-[16/11] w-full rounded-lg" />
+        <Photo name="handsComfort" sizes="(min-width: 768px) 560px, 100vw" className="aspect-[4/3] w-full rounded-lg" />
       </section>
     </main>
   );

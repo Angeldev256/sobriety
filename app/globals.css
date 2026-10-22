@@ -31,12 +31,6 @@
   --inverse-muted: rgba(255, 255, 255, 0.62);
   --inverse-border: rgba(229, 229, 229, 0.2);
   --ring: #0070d1;
-  --illo-sky: #eef4fa;
-  --illo-sun: #f2b35a;
-  --illo-hill-1: #c9def2;
-  --illo-hill-2: #7fb0de;
-  --illo-hill-3: #0070d1;
-  --illo-ink: #0b1b2b;
   color-scheme: light;
 }
 
@@ -63,12 +57,6 @@
   --inverse-muted: rgba(255, 255, 255, 0.62);
   --inverse-border: rgba(229, 229, 229, 0.2);
   --ring: #53b1ff;
-  --illo-sky: #0c1622;
-  --illo-sun: #e7a54a;
-  --illo-hill-1: #132a42;
-  --illo-hill-2: #1c4670;
-  --illo-hill-3: #0a5aa6;
-  --illo-ink: #e9f1f8;
   color-scheme: dark;
 }
 

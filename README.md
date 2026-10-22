@@ -26,6 +26,12 @@ A free, private, judgment-free web app for people in addiction recovery. Anyone 
 - Phone numbers accept local formats such as `0772 123 456`.
 - **Verify the Ugandan help-line numbers in `lib/helplines.ts` before launch.** Lines in a crisis app must be current.
 
+### Photos
+
+- Photos come from Unsplash under the free Unsplash License. Each one is credited to its photographer on the page.
+- All six are listed in `lib/photos.ts`. To swap one, change its `id` and credit there.
+- They're served from Unsplash's CDN, resized to each screen's width and delivered as WebP or AVIF to keep mobile data use low.
+
 ### Support circle (preferred helper)
 
 - A member invites a counsellor, sponsor, health worker, faith leader, family member or friend by email. The invite link can also be shared on WhatsApp.

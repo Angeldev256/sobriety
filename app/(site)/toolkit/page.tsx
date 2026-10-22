@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { LakeCalm } from "@/components/illustrations";
+import { Photo } from "@/components/photo";
 import { BreathingExercise } from "@/components/toolkit/breathing-exercise";
 import { Grounding } from "@/components/toolkit/grounding";
 import { UrgeTimer } from "@/components/toolkit/urge-timer";
@@ -52,7 +52,7 @@ export default async function ToolkitPage() {
             Cravings and difficult feelings pass. These tools can help you ride them out — no account needed.
           </p>
         </div>
-        <LakeCalm className="hidden aspect-[16/10] w-full rounded-lg md:block" />
+        <Photo name="handsTogether" sizes="(min-width: 768px) 460px, 100vw" className="aspect-[16/10] w-full rounded-lg" />
       </header>
 
       <nav aria-label="Tools" className="sticky top-14 z-20 -mx-5 mt-10 overflow-x-auto bg-bg/95 px-5 py-3 backdrop-blur sm:-mx-6 sm:px-6">
