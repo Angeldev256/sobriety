@@ -125,7 +125,7 @@ export type PushSubscriptionRow = {
 
 export type NotificationKind = "welcome" | "reminder" | "milestone" | "encouragement" | "system" | "message" | "call" | "support";
 
-export type Relationship = "counselor" | "sponsor" | "family" | "friend" | "peer" | "health_worker" | "faith_leader" | "other";
+export type Relationship = "counselor" | "sponsor" | "family" | "friend" | "peer" | "health_worker" | "faith_leader" | "professional" | "other";
 export type ConnectionStatus = "pending" | "active" | "declined" | "ended";
 
 export type SupportConnection = {
@@ -177,6 +177,98 @@ export type AppNotification = {
   created_at: string;
 };
 
+// ---- professional care ----
+export type Profession = "counsellor" | "clinical_psychologist" | "psychiatrist" | "psychiatric_nurse" | "social_worker" | "addiction_specialist";
+export type Specialty =
+  | "alcohol" | "drugs" | "gambling" | "tobacco" | "dual_diagnosis" | "trauma"
+  | "family" | "youth" | "women" | "relapse_prevention" | "withdrawal_medical";
+export type SessionMode = "chat" | "audio" | "video";
+export type ProfessionalStatus = "pending" | "verified" | "rejected" | "suspended";
+
+export type Professional = {
+  user_id: string;
+  full_name: string;
+  email: string;
+  profession: Profession;
+  licence_body: string;
+  licence_number: string;
+  institution: string | null;
+  bio: string;
+  specialties: Specialty[];
+  languages: string[];
+  session_modes: SessionMode[];
+  fee_ugx: number;
+  payout_phone: string | null;
+  accepting_patients: boolean;
+  status: ProfessionalStatus;
+  review_note: string | null;
+  reviewed_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+/** The public card patients see (list_professionals). */
+export type ProfessionalCard = Pick<
+  Professional,
+  "user_id" | "full_name" | "profession" | "licence_body" | "institution" | "bio" | "specialties" | "languages" | "session_modes" | "fee_ugx"
+>;
+
+export type IntakeMessage = { role: "user" | "assistant"; content: string; at: string };
+
+export type CareIntake = {
+  id: string;
+  user_id: string;
+  messages: IntakeMessage[];
+  status: "open" | "assessed";
+  assessment: unknown;
+  crisis: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ConsultationStatus = "awaiting_payment" | "paid" | "completed" | "cancelled" | "refunded";
+
+export type Consultation = {
+  id: string;
+  patient_id: string;
+  patient_name: string;
+  professional_id: string | null;
+  professional_name: string;
+  intake_id: string | null;
+  intake_summary: string | null;
+  fee_ugx: number;
+  platform_fee_ugx: number;
+  status: ConsultationStatus;
+  tx_ref: string;
+  payment_provider: "flutterwave" | "manual" | null;
+  provider_transaction_id: string | null;
+  paid_at: string | null;
+  connection_id: string | null;
+  completed_at: string | null;
+  created_at: string;
+};
+
+export type ResourceCategory = "guide" | "factsheet" | "treatment" | "family" | "policy" | "research" | "form";
+
+export type Resource = {
+  id: string;
+  title: string;
+  description: string | null;
+  institution: string;
+  category: ResourceCategory;
+  source_url: string | null;
+  file_path: string | null;
+  file_name: string | null;
+  file_size: number | null;
+  mime_type: string | null;
+  uploaded_by: string | null;
+  status: "pending" | "published" | "archived";
+  created_at: string;
+  published_at: string | null;
+};
+
+export type AppSettings = { id: boolean; platform_fee_percent: number; updated_at: string };
+
 export type Database = {
   public: {
     Tables: {
@@ -195,6 +287,15 @@ export type Database = {
       support_connections: Table<SupportConnection, "member_id" | "member_name" | "helper_name" | "helper_email" | "relationship">;
       support_messages: Table<SupportMessage, "connection_id" | "sender_id" | "body">;
       call_logs: Table<CallLog, "connection_id" | "caller_id" | "kind" | "status">;
+      admins: Table<{ user_id: string; created_at: string }, "user_id">;
+      app_settings: Table<AppSettings>;
+      professionals: Table<
+        Professional,
+        "user_id" | "full_name" | "email" | "profession" | "licence_body" | "licence_number" | "bio" | "specialties" | "languages" | "session_modes" | "fee_ugx"
+      >;
+      care_intakes: Table<CareIntake, "user_id">;
+      consultations: Table<Consultation, "patient_id" | "patient_name" | "professional_name" | "fee_ugx" | "platform_fee_ugx">;
+      resources: Table<Resource, "title" | "institution" | "category">;
     };
     Views: { [_ in never]: never };
     Functions: {
@@ -208,6 +309,15 @@ export type Database = {
       end_support_connection: { Args: { conn: string }; Returns: undefined };
       mark_support_read: { Args: { conn: string }; Returns: undefined };
       get_shared_progress: { Args: { conn: string }; Returns: { label: string | null; type: AddictionType; start_date: string }[] };
+      is_admin: { Args: Record<string, never>; Returns: boolean };
+      list_professionals: { Args: Record<string, never>; Returns: ProfessionalCard[] };
+      create_consultation: { Args: { pro: string; intake: string | null; share_summary: boolean }; Returns: string };
+      cancel_consultation: { Args: { booking: string }; Returns: undefined };
+      activate_consultation: { Args: { booking: string; provider: "flutterwave" | "manual"; provider_tx: string | null }; Returns: string };
+      admin_mark_consultation_paid: { Args: { booking: string; reference: string }; Returns: string };
+      complete_consultation: { Args: { booking: string }; Returns: undefined };
+      admin_refund_consultation: { Args: { booking: string }; Returns: undefined };
+      review_professional: { Args: { pro: string; decision: "verified" | "rejected" | "suspended"; note: string }; Returns: undefined };
     };
     Enums: { [_ in never]: never };
     CompositeTypes: { [_ in never]: never };

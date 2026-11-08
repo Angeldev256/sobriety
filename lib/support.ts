@@ -12,6 +12,8 @@ export const RELATIONSHIPS: { value: Relationship; label: string }[] = [
 ];
 
 export function relationshipLabel(r: Relationship): string {
+  // 'professional' connections are opened by a paid consultation, never by an invite, so it's not in RELATIONSHIPS.
+  if (r === "professional") return "Mental health professional";
   return RELATIONSHIPS.find((x) => x.value === r)?.label ?? "Helper";
 }
 

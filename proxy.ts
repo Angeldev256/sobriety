@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { isSupabaseConfigured, supabaseOrigin } from "@/lib/env";
 
-const PROTECTED = ["/dashboard", "/check-in", "/goals", "/milestones", "/history", "/settings", "/relapse", "/notifications", "/support"];
+const PROTECTED = ["/dashboard", "/check-in", "/goals", "/milestones", "/history", "/settings", "/relapse", "/notifications", "/support", "/care", "/pro", "/admin"];
 // Pages a signed-in member doesn't need: send them straight into their app.
 const GUEST_ONLY = ["/", "/login", "/register", "/forgot-password"];
 

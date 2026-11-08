@@ -95,7 +95,7 @@ npm install
 
 1. Create a free project at <https://supabase.com/dashboard>.
 2. Apply the database migrations. Use **either** of these:
-   - **SQL Editor:** paste and run the four files in `supabase/migrations/` in order (`…01_schema`, `…02_seed_content`, `…03_notifications_and_guest`, `…04_support_circle_uganda`).
+   - **SQL Editor:** paste and run the five files in `supabase/migrations/` in order (`…01_schema`, `…02_seed_content`, `…03_notifications_and_guest`, `…04_support_circle_uganda`, `…05_professional_care`).
    - **CLI:** `npx supabase link --project-ref <your-ref>` and then `npx supabase db push`.
 
    Together they create the tables, the RLS policies, the profile trigger, the account-deletion function, the 14 badges and the 55 motivational messages.
@@ -192,6 +192,47 @@ Video and voice calls use WebRTC. Signalling runs over private Supabase Realtime
 - **Ringing a closed app:** to wake a helper whose app is closed, set `SUPABASE_SECRET_KEY` and the web push keys. The incoming call then arrives as a phone notification.
 - **WhatsApp and phone buttons:** these always work as a fallback.
 
+## Professional care
+
+Patients talk to an AI intake assistant, get matched with verified mental health professionals, pay a session fee, and meet them by chat, voice or video. There's also a resource library for documents from Butabika Hospital and other institutions.
+
+### How it works
+
+1. **Intake (`/care`).** The assistant (Claude, via `ANTHROPIC_API_KEY`) has a short conversation to understand the person's needs. It isn't a clinician and doesn't diagnose.
+2. **Safety.** If the person mentions suicide, self-harm, overdose, seizures or another emergency, free crisis lines appear immediately. Two checks run: the AI's own judgement and a keyword list (`lib/care/safety.ts`, English, Luganda and Swahili). Crisis help is never behind the fee.
+3. **Matching.** A second AI call turns the conversation into a structured assessment. Plain code in `lib/care/matching.ts` then ranks verified professionals by specialty, need for medical review, language, session type and budget, and shows the reason for each match. The AI never picks a professional itself.
+4. **Booking and payment.** Each professional sets their own fee. The platform keeps a percentage, set by an admin (10% by default). The patient pays through Flutterwave (MTN/Airtel Mobile Money or card).
+5. **Session room.** Once payment is confirmed, the app opens a Support circle conversation between patient and professional, with chat, voice and video calls. The professional marks the session complete, which closes the room.
+
+### Money and permissions are enforced in the database
+
+- **Fees come from the professional's profile.** They're copied at booking time by `create_consultation`, never taken from the browser.
+- **Only the server can mark a booking paid.** It does this with the service key, after re-verifying the transaction with Flutterwave's API. The transaction must be successful, in UGX, for at least the fee, and match the booking's reference. The redirect and the webhook body are treated as hints only.
+- **Payment handling is idempotent.** The return page, the webhook and the "I've already paid — check again" button can all run for the same payment safely.
+- **Professionals can't verify themselves.** Changing their licence details after verification sends them back for review.
+- **The intake transcript stays private to the patient.** A professional sees only the AI summary, and only if the patient ticks "share" when booking. Licence numbers and payout numbers are visible only to the professional and admins.
+
+### Setup
+
+1. Run migration `…05_professional_care`. It also creates the private `resources` storage bucket.
+2. **Make yourself an admin.** In the Supabase SQL Editor, run:
+
+   ```sql
+   insert into public.admins (user_id) select id from auth.users where email = 'you@example.com';
+   ```
+
+   The admin page is at `/admin`. From there you verify professionals, set the platform fee, review uploaded resources, record manual payments and record refunds.
+3. **AI.** Set `ANTHROPIC_API_KEY`. Each intake costs a few cents, and limits keep costs predictable: 5 new conversations per person per day, and 24 messages per conversation.
+4. **Flutterwave.**
+   - Set `FLW_SECRET_KEY` and `SUPABASE_SECRET_KEY`. Use the **test** secret key (`FLWSECK_TEST-…`) until you're ready for real money.
+   - In the Flutterwave dashboard, go to **Settings → Webhooks**. Set the URL to `https://<your site>/api/flutterwave/webhook`, and set the secret hash to the same value as `FLW_WEBHOOK_HASH`.
+   - Payouts to professionals are made from your Flutterwave balance (or by Mobile Money) to the payout number on their profile. The `/admin` page shows what each session earned the platform.
+5. **Professionals** apply at `/pro`. Check each registration number with the council named (for example the Uganda Medical and Dental Practitioners Council or the Allied Health Professionals Council) before verifying.
+
+### Resources
+
+Admins and verified professionals add resources at `/resources`. Files go straight from the browser to the private `resources` bucket, up to 20 MB (PDF, Word, image or text). Admin uploads are published immediately. Professionals' uploads wait for an admin. Signed-in members download through a link that expires after 60 seconds, and anyone can browse the list. Each resource names its institution and can link to the original. **Only upload material you have permission to share.**
+
 ## Deployment (Vercel + Supabase)
 
 1. Push the repository to GitHub and import it in Vercel.
@@ -204,7 +245,7 @@ Video and voice calls use WebRTC. Signalling runs over private Supabase Realtime
 - **Row Level Security** is on for every table, so a user can only read and write rows where `user_id = auth.uid()`. Restrictive policies also stop a user from attaching check-ins, relapses or badges to someone else's tracker.
 - Every Server Action re-checks the user with `supabase.auth.getUser()` and filters by `user_id`, as defence in depth.
 - Check-in dates are computed on the server from the user's saved time zone, so the client can't backdate or duplicate them. Timestamps are stored in UTC and shown in the user's time zone.
-- The service-role key is used only by the reminder cron and never reaches the browser.
+- The service-role key is used only on the server (the reminder cron, payment confirmation and notifications) and never reaches the browser.
 - Sign-out is POST-only. `?next=` redirects only accept same-site paths. Server Actions have Next's built-in origin check against CSRF, and Supabase rate-limits its auth endpoints.
 - Private pages are never cached by the service worker.
 - Account deletion calls a `security definer` SQL function that deletes the auth user, and every row cascades with it.

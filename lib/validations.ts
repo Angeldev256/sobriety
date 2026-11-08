@@ -124,3 +124,66 @@ export const supportMessageSchema = z.object({
   connection_id: z.uuid(),
   body: z.string().trim().min(1, "Write a message first.").max(2000, "Please keep messages under 2,000 characters."),
 });
+
+// ---- professional care ----
+const checkboxList = <T extends string>(values: readonly [T, ...T[]], min: number, message: string) =>
+  z.array(z.enum(values)).min(min, message).transform((v) => [...new Set(v)]);
+
+export const professionalSchema = z.object({
+  full_name: z.string().trim().min(2, "Please enter your full name.").max(80),
+  profession: z.enum(["counsellor", "clinical_psychologist", "psychiatrist", "psychiatric_nurse", "social_worker", "addiction_specialist"], {
+    error: "Please choose your profession.",
+  }),
+  licence_body: z.string().trim().min(2, "Please enter the council or body you're registered with.").max(120),
+  licence_number: z.string().trim().min(2, "Please enter your registration or licence number.").max(60),
+  institution: optionalText(120),
+  bio: z
+    .string()
+    .trim()
+    .min(40, "Please write at least a few sentences (40 characters or more).")
+    .max(1200, "Please keep this under 1,200 characters."),
+  specialties: checkboxList(
+    ["alcohol", "drugs", "gambling", "tobacco", "dual_diagnosis", "trauma", "family", "youth", "women", "relapse_prevention", "withdrawal_medical"],
+    1,
+    "Choose at least one area you work in.",
+  ),
+  languages: checkboxList(
+    ["English", "Luganda", "Swahili", "Runyankole", "Rukiga", "Lusoga", "Luo", "Ateso", "Lugbara", "Runyoro", "Rutooro", "Lumasaba", "Karimojong"],
+    1,
+    "Choose at least one language.",
+  ),
+  session_modes: checkboxList(["chat", "audio", "video"], 1, "Choose at least one session type."),
+  fee_ugx: z.coerce
+    .number({ error: "Please enter your fee." })
+    .int("Please enter a whole number of shillings.")
+    .min(5000, "The minimum fee is UGX 5,000.")
+    .max(2000000, "The maximum fee is UGX 2,000,000."),
+  payout_phone: z.string().trim().max(30).optional(),
+  accepting_patients: z.boolean(),
+  agree: z.literal("on", { error: "Please confirm your details are true and your registration is current." }),
+});
+
+export const resourceSchema = z
+  .object({
+    title: z.string().trim().min(3, "Please give the resource a title.").max(160),
+    description: optionalText(600),
+    institution: z.string().trim().min(2, "Which institution is this from?").max(120),
+    category: z.enum(["guide", "factsheet", "treatment", "family", "policy", "research", "form"], { error: "Please choose a category." }),
+    source_url: z
+      .string()
+      .trim()
+      .max(500)
+      .refine((v) => v === "" || /^https:\/\/[^\s]+$/.test(v), "Please enter a full https:// link.")
+      .transform((v) => (v === "" ? null : v)),
+    file_path: z.string().regex(/^[0-9a-f-]{36}\/[0-9a-f-]{36}\.(pdf|docx?|png|jpe?g|txt)$/).nullable(),
+    file_name: z.string().max(200).nullable(),
+    file_size: z.number().int().min(1).max(20 * 1024 * 1024).nullable(),
+    mime_type: z.string().max(120).nullable(),
+    permission: z.literal(true, { error: "Please confirm you have permission to share this." }),
+  })
+  .refine((d) => d.file_path || d.source_url, { path: ["source_url"], message: "Upload a file or add a link to the original." });
+
+export const intakeMessageSchema = z.object({
+  intake_id: z.uuid().nullable(),
+  text: z.string().trim().min(1, "Write a message first.").max(1500, "Please keep each message under 1,500 characters."),
+});

@@ -56,6 +56,21 @@ export const env = {
   get pushEnabled() {
     return Boolean(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY);
   },
+  /** The AI intake assistant needs an Anthropic API key. */
+  get careAiEnabled() {
+    return Boolean(process.env.ANTHROPIC_API_KEY);
+  },
+  get flutterwaveSecretKey() {
+    return process.env.FLW_SECRET_KEY;
+  },
+  /** The "Secret hash" set in the Flutterwave dashboard; sent back in each webhook's verif-hash header. */
+  get flutterwaveWebhookHash() {
+    return process.env.FLW_WEBHOOK_HASH;
+  },
+  /** Paying for consultations needs Flutterwave keys and the service key (to record payments). */
+  get paymentsEnabled() {
+    return Boolean(process.env.FLW_SECRET_KEY && process.env.SUPABASE_SECRET_KEY);
+  },
 };
 
 /**

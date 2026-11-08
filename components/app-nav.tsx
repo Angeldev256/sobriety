@@ -13,18 +13,20 @@ const MEMBER_TOP: TopItem[] = [
   { href: "/dashboard", label: "Today", match: ["/dashboard", "/relapse"] },
   { href: "/check-in", label: "Check in" },
   { href: "/support", label: "Support" },
+  { href: "/care", label: "Care", match: ["/care", "/pro"] },
   { href: "/history", label: "Progress", match: ["/history", "/milestones", "/goals"] },
   { href: "/toolkit", label: "Toolkit" },
 ];
 const GUEST_TOP: TopItem[] = [
   { href: "/toolkit", label: "Coping toolkit" },
+  { href: "/resources", label: "Resources" },
   { href: "/help", label: "Help lines" },
 ];
 
 const MEMBER_TABS: Tab[] = [
   { href: "/dashboard", label: "Today", Icon: HomeIcon, match: ["/dashboard", "/relapse"] },
   { href: "/check-in", label: "Check in", Icon: CheckInIcon },
-  { href: "/support", label: "Support", Icon: SupportIcon },
+  { href: "/support", label: "Support", Icon: SupportIcon, match: ["/support", "/care", "/pro"] },
   { href: "/history", label: "Progress", Icon: HistoryIcon, match: ["/history", "/milestones", "/goals"] },
   { href: "/toolkit", label: "Toolkit", Icon: ToolkitIcon },
 ];
