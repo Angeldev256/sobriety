@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ComponentType } from "react";
-import { AccountIcon, CheckInIcon, HelpIcon, HistoryIcon, HomeIcon, PlusIcon, SupportIcon, ToolkitIcon } from "@/components/icons";
+import { AccountIcon, ChatIcon, CheckInIcon, HelpIcon, HistoryIcon, HomeIcon, PlusIcon, SupportIcon, ToolkitIcon } from "@/components/icons";
 
 type Item = { href: string; label: string };
 type Tab = Item & { Icon: ComponentType<{ className?: string }>; match?: string[]; emphasis?: boolean };
@@ -15,10 +15,9 @@ const MEMBER_TOP: TopItem[] = [
   { href: "/support", label: "Support" },
   { href: "/care", label: "Care", match: ["/care", "/pro"] },
   { href: "/history", label: "Progress", match: ["/history", "/milestones", "/goals"] },
-  { href: "/toolkit", label: "Toolkit" },
+  { href: "/resources", label: "Resources" },
 ];
 const GUEST_TOP: TopItem[] = [
-  { href: "/toolkit", label: "Coping toolkit" },
   { href: "/resources", label: "Resources" },
   { href: "/help", label: "Help lines" },
 ];
@@ -26,13 +25,13 @@ const GUEST_TOP: TopItem[] = [
 const MEMBER_TABS: Tab[] = [
   { href: "/dashboard", label: "Today", Icon: HomeIcon, match: ["/dashboard", "/relapse"] },
   { href: "/check-in", label: "Check in", Icon: CheckInIcon },
-  { href: "/support", label: "Support", Icon: SupportIcon, match: ["/support", "/care", "/pro"] },
+  { href: "/support", label: "Support", Icon: SupportIcon },
   { href: "/history", label: "Progress", Icon: HistoryIcon, match: ["/history", "/milestones", "/goals"] },
-  { href: "/toolkit", label: "Toolkit", Icon: ToolkitIcon },
+  { href: "/care", label: "Care", Icon: ChatIcon, match: ["/care", "/pro"] },
 ];
 const GUEST_TABS: Tab[] = [
   { href: "/", label: "Home", Icon: HomeIcon },
-  { href: "/toolkit", label: "Toolkit", Icon: ToolkitIcon },
+  { href: "/resources", label: "Resources", Icon: ToolkitIcon },
   { href: "/login?mode=signup&next=/dashboard", label: "Start", Icon: PlusIcon, match: ["/login"], emphasis: true },
   { href: "/help", label: "Help", Icon: HelpIcon },
   { href: "/login", label: "Sign in", Icon: AccountIcon, match: [] },

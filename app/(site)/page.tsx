@@ -8,10 +8,10 @@ import { getViewer } from "@/lib/session";
 import { createClient } from "@/lib/supabase/server";
 
 const OPEN_TOOLS = [
-  { href: "/toolkit#urge", title: "Urge timer", body: "Ride out a craving, minute by minute." },
-  { href: "/toolkit#breathe", title: "Guided breathing", body: "Slow your breath, calm your body." },
-  { href: "/toolkit#ground", title: "Grounding", body: "Come back to the present in five steps." },
   { href: "/help", title: "Help lines", body: "Free, confidential support, day and night." },
+  { href: "/care", title: "Recovery companion", body: "Talk through a craving or a hard day, any time." },
+  { href: "/resources", title: "Resources", body: "Guides from Butabika Hospital and other trusted sources." },
+  { href: "/care", title: "Find a professional", body: "Get matched with a verified counsellor in Uganda." },
 ];
 
 const WHEN_READY = [
@@ -43,12 +43,12 @@ export default async function Home({ searchParams }: PageProps<"/">) {
           <p className="text-xs font-medium tracking-[0.08em] text-white/60 uppercase">Free · Private · Made for Uganda</p>
           <h1 className="display-xl mt-6 max-w-3xl">Recovery, one day at a time.</h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/70">
-            Support for anyone recovering from alcohol, betting, drugs like mairungi, tobacco or anything else. Use the coping tools
-            right now — and when you&apos;re ready, track your progress and stay close to the people supporting you.
+            Support for anyone recovering from alcohol, betting, drugs like mairungi, tobacco or anything else. Talk to our recovery
+            companion any time — and when you&apos;re ready, track your progress and stay close to the people supporting you.
           </p>
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <Link href={start.href} className="btn btn-primary">{start.label}</Link>
-            <Link href="/toolkit" className="btn btn-on-inverse">I need help with a craving</Link>
+            <Link href="/help" className="btn btn-on-inverse">I need help right now</Link>
           </div>
           <div className="mt-4">
             <InstallAppButton tone="inverse" className="btn-sm" />
@@ -59,8 +59,8 @@ export default async function Home({ searchParams }: PageProps<"/">) {
       </section>
 
       <section aria-labelledby="now-h" className="mx-auto max-w-6xl px-5 py-20 sm:px-6 md:py-24">
-        <p className="eyebrow">No account needed</p>
-        <h2 id="now-h" className="display-lg mt-3 max-w-2xl">Use it right now.</h2>
+        <p className="eyebrow">Support when you need it</p>
+        <h2 id="now-h" className="display-lg mt-3 max-w-2xl">Help, right now.</h2>
         <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {OPEN_TOOLS.map((t) => (
             <li key={t.title}>

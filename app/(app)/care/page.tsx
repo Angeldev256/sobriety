@@ -29,8 +29,8 @@ export default async function CarePage({ searchParams }: PageProps<"/care">) {
         <p className="eyebrow">Professional care</p>
         <h1 className="display-lg mt-3">Talk to someone trained to help.</h1>
         <p className="mt-4 text-lg leading-relaxed text-body">
-          Start with a short, private conversation with our assistant. It will understand what you need and match you with a verified
-          counsellor, psychologist or psychiatrist in Uganda. You pay only when you book a session.
+          Chat privately with our recovery companion about cravings, drinking, drugs, betting or how you&apos;re feeling, any time. When
+          you&apos;re ready, it matches you with a verified counsellor, psychologist or psychiatrist in Uganda. You pay only when you book a session.
         </p>
       </header>
 
@@ -49,14 +49,14 @@ export default async function CarePage({ searchParams }: PageProps<"/care">) {
       <div className="grid gap-16 lg:grid-cols-[1fr_22rem] lg:gap-20">
         <div className="space-y-14">
           <section aria-labelledby="start-h" className="panel-inverse p-8 sm:p-10">
-            <h2 id="start-h" className="heading-xl">{latest ? "Continue where you left off" : "Find the right professional"}</h2>
+            <h2 id="start-h" className="heading-xl">{latest ? "Continue where you left off" : "Talk to your recovery companion"}</h2>
             <p className="mt-3 max-w-lg leading-relaxed text-inverse-muted">
-              About 5 minutes. You&apos;ll be asked what you&apos;re going through, how it affects you, and what kind of help you&apos;d like.
+              Ask anything about addiction and recovery, get ideas for getting through a craving, and find a professional when you want one.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               {latest && (
-                <Link href={latest.status === "assessed" ? `/care/intake/${latest.id}/matches` : `/care/intake/${latest.id}`} className="btn btn-primary">
-                  {latest.status === "assessed" ? "See my matches" : "Continue conversation"}
+                <Link href={`/care/intake/${latest.id}`} className="btn btn-primary">
+                  Continue conversation
                 </Link>
               )}
               <form action={startIntake}>
@@ -95,7 +95,7 @@ export default async function CarePage({ searchParams }: PageProps<"/care">) {
           <section className="card p-6">
             <h2 className="heading-md">How it works</h2>
             <ol className="mt-5 space-y-4 text-sm leading-relaxed text-body">
-              <li><span className="font-semibold text-fg">1. Talk.</span> Tell the assistant what&apos;s going on. It isn&apos;t a doctor and won&apos;t diagnose you.</li>
+              <li><span className="font-semibold text-fg">1. Talk.</span> Chat with the companion about anything to do with your recovery. It isn&apos;t a doctor and won&apos;t diagnose you.</li>
               <li><span className="font-semibold text-fg">2. Get matched.</span> We suggest up to three verified professionals and explain why.</li>
               <li><span className="font-semibold text-fg">3. Book and pay.</span> Each professional sets their fee. Pay by MTN or Airtel Mobile Money, or card.</li>
               <li><span className="font-semibold text-fg">4. Meet.</span> Chat, voice or video call in your private session room.</li>
@@ -104,7 +104,7 @@ export default async function CarePage({ searchParams }: PageProps<"/care">) {
           <section className="card p-6">
             <h2 className="heading-md">Your privacy</h2>
             <p className="mt-3 text-sm leading-relaxed text-body">
-              Your conversation with the assistant is processed by our AI provider, Anthropic, to reply and to find your match. The
+              Your conversation with the companion is processed by our AI provider, Anthropic, to reply and to find your match. The
               professional sees only a short summary, and only if you choose to share it when booking.
             </p>
           </section>

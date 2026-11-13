@@ -72,7 +72,7 @@ export function formatUgx(amount: number): string {
   return `UGX ${Math.round(amount).toLocaleString("en-US")}`;
 }
 
-/** The intake conversation stops accepting messages after this many from the person. */
-export const MAX_INTAKE_TURNS = 24;
-/** New intake conversations a person can start per day (keeps AI costs predictable). */
+/** A conversation stops accepting messages after this many from the person (they can start a new one). */
+export const MAX_INTAKE_TURNS = 40;
+/** New conversations a person can start per day (keeps AI costs predictable). */
 export const MAX_INTAKES_PER_DAY = 5;

@@ -3,16 +3,16 @@
 //  - Static build assets (/_next/static, icons): cache-first (they are content-hashed).
 //  - Page navigations: network-first; fall back to the offline page. Private pages are NEVER cached,
 //    because they contain sensitive personal data and may be on a shared device.
-//  - Public pages (/help, /toolkit) are cached so support stays reachable offline.
+//  - Public pages (/help, /resources) are cached so support stays reachable offline.
 //  - Caching is skipped on localhost so development builds are never served stale.
 // Push:
 //  - Shows notifications sent by the server and opens the right page when tapped.
 
-const VERSION = "v2";
+const VERSION = "v3";
 const STATIC_CACHE = `static-${VERSION}`;
 const PAGES_CACHE = `pages-${VERSION}`;
 const OFFLINE_URL = "/offline";
-const PUBLIC_PAGES = [OFFLINE_URL, "/help", "/toolkit"];
+const PUBLIC_PAGES = [OFFLINE_URL, "/help", "/resources"];
 const IS_DEV = ["localhost", "127.0.0.1"].includes(self.location.hostname);
 
 self.addEventListener("install", (event) => {

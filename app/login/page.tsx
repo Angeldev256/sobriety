@@ -58,7 +58,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
         <div className="mb-8 rounded-lg bg-surface-2 p-5">
           <p className="font-semibold">Sign in to start tracking</p>
           <p className="caption mt-1">
-            To use {gatedFeature}, you&apos;ll need a free account so your progress is saved privately. The toolkit and help lines
+            To use {gatedFeature}, you&apos;ll need a free account so your progress is saved privately. Help lines and resources
             stay open to everyone.
           </p>
         </div>
@@ -106,8 +106,8 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
       )}
 
       <p className="caption mt-10">
-        Not ready to sign up? You can still use the <Link href="/toolkit" className="link">coping toolkit</Link> and{" "}
-        <Link href="/help" className="link">help lines</Link> without an account.
+        Not ready to sign up? You can still use the <Link href="/help" className="link">help lines</Link> and{" "}
+        <Link href="/resources" className="link">resources</Link> without an account.
       </p>
     </AuthShell>
   );

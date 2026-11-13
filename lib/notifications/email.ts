@@ -67,7 +67,7 @@ export const emailTemplates = {
     const body = [
       `Hi ${name}, welcome. Choosing to start is one of the bravest things a person can do, and we're glad you're here.`,
       "Your space is private — only you can see what you track. Start by adding what you're working on and when your sober time began. A one-minute check-in each day helps you notice patterns and progress.",
-      "On hard days, the toolkit has breathing exercises, an urge timer and grounding steps. And help lines are always one tap away.",
+      "On hard days, your recovery companion is there to talk any time. And help lines are always one tap away.",
     ];
     return {
       subject: `Welcome to ${APP_NAME}`,

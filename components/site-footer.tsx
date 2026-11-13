@@ -12,7 +12,7 @@ export function SiteFooter() {
           </p>
         </div>
         <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
-          <Link href="/toolkit" className="text-white/85 hover:text-white">Coping toolkit</Link>
+          <Link href="/resources" className="text-white/85 hover:text-white">Resources</Link>
           <Link href="/help" className="text-white/85 hover:text-white">Help lines</Link>
           <Link href="/help" className="btn btn-sm border border-white/60 text-white hover:bg-white/10">Get help now</Link>
         </nav>

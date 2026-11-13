@@ -22,6 +22,10 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [{ protocol: "https", hostname: "lh3.googleusercontent.com" }],
   },
+  // The coping toolkit was removed; old links and notifications land on the help lines instead.
+  async redirects() {
+    return [{ source: "/toolkit", destination: "/help", permanent: false }];
+  },
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },

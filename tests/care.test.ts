@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { rankProfessionals, type CareNeeds } from "@/lib/care/matching";
 import { paymentMatches } from "@/lib/care/payment-match";
 import { looksLikeCrisis } from "@/lib/care/safety";
+import { keepOnTopic, OFF_TOPIC_REPLY } from "@/lib/care/topic";
 import type { ProfessionalCard } from "@/lib/database.types";
 
 const pro = (over: Partial<ProfessionalCard> & { user_id: string }): ProfessionalCard => ({
@@ -107,5 +108,29 @@ describe("looksLikeCrisis", () => {
     "I drink about four beers a day",
   ])("doesn't flag %j", (text) => {
     expect(looksLikeCrisis(text)).toBe(false);
+  });
+});
+
+describe("keepOnTopic", () => {
+  const long = "Here is a full essay about football tactics. ".repeat(20);
+
+  it("keeps on-topic replies of any length", () => {
+    const turn = { reply: long, on_topic: true, crisis: false, ready_to_match: false };
+    expect(keepOnTopic(turn)).toBe(turn);
+  });
+
+  it("keeps a short, polite decline", () => {
+    const turn = { reply: "I'm only here to talk about recovery. How are you doing today?", on_topic: false, crisis: false, ready_to_match: false };
+    expect(keepOnTopic(turn).reply).toBe(turn.reply);
+  });
+
+  it("replaces an off-topic message that was answered at length", () => {
+    const turn = { reply: long, on_topic: false, crisis: false, ready_to_match: true };
+    expect(keepOnTopic(turn)).toEqual({ ...turn, reply: OFF_TOPIC_REPLY });
+  });
+
+  it("never replaces a crisis reply", () => {
+    const turn = { reply: long, on_topic: false, crisis: true, ready_to_match: false };
+    expect(keepOnTopic(turn).reply).toBe(long);
   });
 });

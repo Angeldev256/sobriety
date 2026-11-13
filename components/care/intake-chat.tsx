@@ -5,6 +5,15 @@ import { findMatches, sendIntakeMessage } from "@/app/(app)/care/actions";
 import type { IntakeMessage } from "@/lib/database.types";
 import { helplinesFor } from "@/lib/helplines";
 
+const STARTERS = [
+  "I'm having a strong craving right now",
+  "How do I cut down on drinking?",
+  "I can't stop betting",
+  "How do I tell my family?",
+  "What help is there at Butabika?",
+  "I'd like to talk to a professional",
+];
+
 type Props = {
   intakeId: string;
   initialMessages: IntakeMessage[];
@@ -33,8 +42,8 @@ export function IntakeChat({ intakeId, initialMessages, initialCrisis, initialRe
     endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages.length, pending]);
 
-  function send() {
-    const text = draft.trim();
+  function send(preset?: string) {
+    const text = (preset ?? draft).trim();
     if (!text || pending || full) return;
     setError(null);
     // Show the person's message straight away; the server returns the full saved conversation.
@@ -48,7 +57,7 @@ export function IntakeChat({ intakeId, initialMessages, initialCrisis, initialRe
         setReady((r) => r || res.readyToMatch);
       } else {
         setMessages((m) => m.slice(0, -1));
-        setDraft(text);
+        if (!preset) setDraft(text);
         setError(res.error);
       }
     });
@@ -91,6 +100,16 @@ export function IntakeChat({ intakeId, initialMessages, initialCrisis, initialRe
             </p>
           </li>
         ))}
+        {userTurns === 0 && !pending && (
+          <li>
+            <p className="caption mb-3">Not sure where to start? Try one of these:</p>
+            <div className="flex flex-wrap gap-2">
+              {STARTERS.map((s) => (
+                <button key={s} type="button" className="chip" onClick={() => send(s)}>{s}</button>
+              ))}
+            </div>
+          </li>
+        )}
         {pending && (
           <li className="flex justify-start">
             <p className="rounded-2xl bg-surface-2 px-4 py-3 text-muted">Thinking…</p>
@@ -102,7 +121,7 @@ export function IntakeChat({ intakeId, initialMessages, initialCrisis, initialRe
       <div className="sticky bottom-16 space-y-3 border-t border-border bg-bg pt-4 pb-2 lg:bottom-0">
         {ready && (
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg bg-surface-2 p-4">
-            <p className="text-sm">Ready when you are. You can keep talking, or see who we&apos;d recommend.</p>
+            <p className="text-sm">Want to talk to a professional? See who we&apos;d recommend — you can keep chatting too.</p>
             <button type="button" onClick={match} className="btn btn-primary btn-sm" disabled={matching || pending}>
               {matching ? "Finding your matches…" : "See my matches"}
             </button>
@@ -110,7 +129,7 @@ export function IntakeChat({ intakeId, initialMessages, initialCrisis, initialRe
         )}
         {error && <p role="alert" className="text-sm text-danger">{error}</p>}
         {full ? (
-          <p className="caption">This conversation has reached its limit. Please see your matches.</p>
+          <p className="caption">This conversation has reached its limit. You can start a new one from the Care page.</p>
         ) : (
           <form
             onSubmit={(e) => {
@@ -132,7 +151,7 @@ export function IntakeChat({ intakeId, initialMessages, initialCrisis, initialRe
               }}
               rows={2}
               maxLength={1500}
-              placeholder="Type your message…"
+              placeholder="Ask about cravings, drinking, betting, feelings…"
               className="input min-h-12 flex-1 resize-none"
               disabled={pending || matching}
             />

@@ -1,11 +1,11 @@
 # Sobriety Tracker
 
-A free, private, judgment-free web app for people in addiction recovery. Anyone can use the coping toolkit, help lines, daily reflection and sober-time calculator without an account. Creating a free account unlocks private tracking: a live sober-time counter, daily check-ins, goals, milestones, progress history, and gentle reminders by email or phone notification. It installs on phones and desktops as a Progressive Web App. **100% free — no paywalls, no subscriptions, no locked features.**
+A free, private, judgment-free web app for people in addiction recovery. Anyone can use the help lines, resource library, daily reflection and sober-time calculator without an account. Creating a free account unlocks private tracking: a live sober-time counter, daily check-ins, goals, milestones, progress history, and gentle reminders by email or phone notification. It installs on phones and desktops as a Progressive Web App. **100% free — no paywalls, no subscriptions, no locked features.**
 
 ## Features
 
 - **Sign in your way:** email and password (with email confirmation, forgot-password and reset flows) or Google. Passwords are handled by Supabase Auth and never touch this app's database.
-- **No account needed for support:** the coping toolkit (urge timer, guided breathing, 5-4-3-2-1 grounding), help lines, today's reflection and a sober-time calculator are open to everyone. Tracking features send guests to sign in, then return them to where they were.
+- **No account needed for support:** help lines, the resource library, today's reflection and a sober-time calculator are open to everyone. Tracking features send guests to sign in, then return them to where they were.
 - **Notifications:** a welcome email, daily check-in reminders, milestone alerts and occasional encouragement, delivered to an in-app inbox and, if the user chooses, by web push (phone or desktop) and email. Lock-screen and email wording never mentions the addiction.
 - **Live sobriety timer.** Track several addictions (alcohol, nicotine, drugs, gambling, other), each with its own counter.
 - **Daily check-ins.** Record mood, cravings, triggers, a note and whether you stayed sober. One per day per tracker, and today's entry can be edited.
@@ -198,7 +198,7 @@ Patients talk to an AI intake assistant, get matched with verified mental health
 
 ### How it works
 
-1. **Intake (`/care`).** The assistant (Claude, via `ANTHROPIC_API_KEY`) has a short conversation to understand the person's needs. It isn't a clinician and doesn't diagnose.
+1. **Recovery companion (`/care`).** A chatbot (Claude, via `ANTHROPIC_API_KEY`) that people can talk to about cravings, drinking, drugs, betting, feelings, family and getting help. It isn't a clinician and doesn't diagnose. It only discusses addiction, recovery and related wellbeing, and politely declines anything else. That rule is in its prompt, with a backstop in `lib/care/topic.ts`. Along the way it learns what the person needs, so it can match them with a professional when they want one.
 2. **Safety.** If the person mentions suicide, self-harm, overdose, seizures or another emergency, free crisis lines appear immediately. Two checks run: the AI's own judgement and a keyword list (`lib/care/safety.ts`, English, Luganda and Swahili). Crisis help is never behind the fee.
 3. **Matching.** A second AI call turns the conversation into a structured assessment. Plain code in `lib/care/matching.ts` then ranks verified professionals by specialty, need for medical review, language, session type and budget, and shows the reason for each match. The AI never picks a professional itself.
 4. **Booking and payment.** Each professional sets their own fee. The platform keeps a percentage, set by an admin (10% by default). The patient pays through Flutterwave (MTN/Airtel Mobile Money or card).

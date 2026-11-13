@@ -7,7 +7,7 @@ import { getProfile } from "@/lib/data";
 import type { CareIntake } from "@/lib/database.types";
 import { requireUser } from "@/lib/supabase/server";
 
-export const metadata: Metadata = { title: "Care assistant" };
+export const metadata: Metadata = { title: "Recovery companion" };
 
 export default async function IntakePage({ params }: PageProps<"/care/intake/[id]">) {
   const { id } = await params;
@@ -25,9 +25,9 @@ export default async function IntakePage({ params }: PageProps<"/care/intake/[id
     <div className="mx-auto flex min-h-[calc(100dvh-14rem)] max-w-3xl flex-col lg:min-h-[calc(100dvh-12rem)]">
       <header className="space-y-3 border-b border-border pb-6">
         <Link href="/care" className="text-sm text-muted hover:text-fg">← Professional care</Link>
-        <h1 className="text-2xl font-light sm:text-3xl">Care assistant</h1>
+        <h1 className="text-2xl font-light sm:text-3xl">Recovery companion</h1>
         <p className="caption">
-          An AI assistant, not a clinician. It helps us understand what you need so we can match you with the right professional.
+          An AI companion for questions about addiction and recovery. It isn&apos;t a doctor or counsellor, and it only talks about recovery topics.
         </p>
       </header>
       <IntakeChat

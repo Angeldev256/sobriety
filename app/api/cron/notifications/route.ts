@@ -133,7 +133,7 @@ async function processUser(db: ReturnType<typeof createServiceClient>, s: Remind
         kind: "encouragement",
         title: `Thinking of you, ${name}`,
         body: pickLine(ENCOURAGEMENT_LINES, `${s.user_id}:${localDate}`),
-        url: "/toolkit",
+        url: "/care",
         push: true,
       });
       out.encouragement++;

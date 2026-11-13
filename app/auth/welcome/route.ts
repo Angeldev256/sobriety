@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
     await notify(supabase, data.user.id, {
       kind: "welcome",
       title: "Welcome to Sobriety Tracker",
-      body: "Your private space is ready. Start by adding what you're working on — and remember, the toolkit and help lines are always here.",
+      body: "Your private space is ready. Start by adding what you're working on — and remember, your recovery companion and help lines are always here.",
       url: "/dashboard",
       email: data.user.email ? { to: data.user.email, content: emailTemplates.welcome(name) } : null,
     });

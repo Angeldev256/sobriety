@@ -36,7 +36,7 @@ export async function startIntake() {
   const greeting: IntakeMessage = {
     role: "assistant",
     at: now(),
-    content: `Hi${first ? ` ${first}` : ""}. I'm here to understand what you're going through, so we can connect you with the right professional. There are no wrong answers, and you can stop at any time. What would you like help with?`,
+    content: `Hi${first ? ` ${first}` : ""}. I'm your recovery companion. You can talk to me about cravings, drinking, drugs, betting, how you're feeling, or supporting someone you love — and when you're ready, I can help you find a professional. What's on your mind today?`,
   };
   const { data, error } = await supabase.from("care_intakes").insert({ user_id: user.id, messages: [greeting] }).select("id").single();
   if (error || !data) redirect("/care?error=1");

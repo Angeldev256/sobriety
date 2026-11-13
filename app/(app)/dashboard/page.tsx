@@ -232,12 +232,12 @@ export default async function DashboardPage({ searchParams }: PageProps<"/dashbo
         </Link>
       )}
 
-      <Link href="/toolkit" className="group flex items-center justify-between gap-6 rounded-lg border border-border p-6 hover:bg-surface-2">
+      <Link href="/care" className="group flex items-center justify-between gap-6 rounded-lg border border-border p-6 hover:bg-surface-2">
         <span>
           <span className="heading-lg block">Having a hard moment?</span>
-          <span className="caption mt-1 block">Urge timer, guided breathing and grounding — right now.</span>
+          <span className="caption mt-1 block">Talk it through with your recovery companion — right now, any time.</span>
         </span>
-        <span className="text-sm font-semibold text-link group-hover:underline">Open toolkit</span>
+        <span className="text-sm font-semibold text-link group-hover:underline">Start talking</span>
       </Link>
 
       {motd && <MessageOfTheDay id={motd.id} body={motd.body} favorited={motd.favorited} />}
